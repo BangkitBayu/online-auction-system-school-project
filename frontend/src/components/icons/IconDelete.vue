@@ -1,0 +1,31 @@
+<script setup lang="js">
+const props = defineProps({
+  variants: {
+    type: String,
+    default: 'white',
+  },
+})
+</script>
+
+<template>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    :class="['delete-icon', [`icon-${props.variants}`]]"
+  >
+    <path
+      d="M7 21q-.825 0-1.412-.587T5 19V6q-.425 0-.712-.288T4 5t.288-.712T5 4h4q0-.425.288-.712T10 3h4q.425 0 .713.288T15 4h4q.425 0 .713.288T20 5t-.288.713T19 6v13q0 .825-.587 1.413T17 21zm3.713-4.288Q11 16.426 11 16V9q0-.425-.288-.712T10 8t-.712.288T9 9v7q0 .425.288.713T10 17t.713-.288m4 0Q15 16.426 15 16V9q0-.425-.288-.712T14 8t-.712.288T13 9v7q0 .425.288.713T14 17t.713-.288"
+    />
+  </svg>
+</template>
+
+<style lang="css" scoped>
+.delete-icon {
+  height: 15px;
+  width: 15px;
+}
+
+.icon-white {
+  fill: white;
+}
+</style>

@@ -1,0 +1,41 @@
+:root {
+  --primary-color: #0bbd0b;
+  --secondary-color: #7dd27d;
+
+  --text-heading-color: #383838;
+  --text-description-color: #5a5959;
+}
+
+* {
+  font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 0px;
+  margin: 0px;
+  box-sizing: border-box;
+}
+
+.nav-link {
+  font-size: small;
+  color: #414141;
+  margin-top: 8px;
+}
+
+.error {
+  color: red;
+  font-size: small;
+  font-weight: 500;
+}
+
+.line-divider {
+  width: 100%;
+  height: 1px;
+  border: 1px solid #e4e4e4;
+  margin-block: 1rem;
+}
+
+tr:nth-child(even) {
+  background-color: #f1f1f1;
+}
+
+textarea {
+  resize: none;
+}
