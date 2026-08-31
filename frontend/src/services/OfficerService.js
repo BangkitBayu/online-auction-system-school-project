@@ -18,4 +18,16 @@ export default class OfficerService {
 
     return response
   }
+
+  async show(id) {
+    const response = await api.get(`/officers/${id}`)
+
+    return response
+  }
+
+  async update(payload, id) {
+    const response = await api.put(`/officers/${id}`, payload)
+
+    return response
+  }
 }

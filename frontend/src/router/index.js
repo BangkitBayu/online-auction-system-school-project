@@ -14,6 +14,7 @@ import AuctionReportsView from '@/views/pages/reports/AuctionReportsView.vue'
 import AuctionsHistoryView from '@/views/pages/auctions/AuctionsHistoryView.vue'
 import OfficersView from '@/views/pages/officers/OfficersView.vue'
 import OfficerAddFormView from '@/views/pages/officers/OfficerAddFormView.vue'
+import OfficerEditFormView from '@/views/pages/officers/OfficerEditFormView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -133,6 +134,15 @@ const router = createRouter({
       path: '/officers/add',
       name: 'officerAddForm',
       component: OfficerAddFormView,
+      meta: {
+        role: ['administrator'],
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/officers/edit/:id',
+      name: 'officerEditForm',
+      component: OfficerEditFormView,
       meta: {
         role: ['administrator'],
         requiresAuth: true

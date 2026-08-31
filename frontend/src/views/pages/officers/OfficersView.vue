@@ -114,7 +114,7 @@ onMounted(() => {
                     <BaseButton
                       class="officer-wrapper__btn"
                       @click="
-                        $router.push({ name: 'formEditAsset', params: { id: item.id_barang } })
+                        $router.push({ name: 'officerEditForm', params: { id: item.id_petugas } })
                       "
                       ><template #btn-content><IconEdit></IconEdit></template
                     ></BaseButton>
