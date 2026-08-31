@@ -45,8 +45,6 @@ const formData = reactive({
   harga_awal: '',
   deskripsi_barang: '',
   id_kategori_barang: '',
-  id_user: '',
-  harga_akhir: '',
   tgl_mulai_lelang: '',
   tgl_akhir_lelang: '',
 })
@@ -92,7 +90,15 @@ const getUsers = async () => {
 }
 
 const submitData = async () => {
-  const { nama_barang, tgl, harga_awal, deskripsi_barang, id_kategori_barang, id_user , harga_akhir, tgl_mulai_lelang, tgl_akhir_lelang } = formData
+  const {
+    nama_barang,
+    tgl,
+    harga_awal,
+    deskripsi_barang,
+    id_kategori_barang,
+    tgl_mulai_lelang,
+    tgl_akhir_lelang,
+  } = formData
   const payload = new FormData()
   payload.append('nama_barang', nama_barang)
   payload.append('tgl', tgl)
@@ -100,10 +106,8 @@ const submitData = async () => {
   payload.append('deskripsi_barang', deskripsi_barang)
   payload.append('thumbnail', thumbnailUploaded.value)
   payload.append('id_kategori_barang', id_kategori_barang)
-  payload.append('id_user', id_user)
-  payload.append('harga_akhir' , harga_akhir)
-  payload.append('tgl_mulai_lelang' , tgl_mulai_lelang)
-  payload.append('tgl_akhir_lelang' , tgl_akhir_lelang)
+  payload.append('tgl_mulai_lelang', tgl_mulai_lelang)
+  payload.append('tgl_akhir_lelang', tgl_akhir_lelang)
 
   try {
     isLoading.value = true
@@ -202,18 +206,6 @@ onMounted(async () => {
                 <p class="error" v-if="setErrors.harga_awal" v-text="setErrors.harga_awal[0]"></p>
               </div>
               <div class="form-wrapper__form-group">
-                <BaseLabel :for="'harga-awal-input'" :value="'Harga Akhir'"></BaseLabel>
-                <BaseInput
-                  :id="'harga-akhir-input'"
-                  :type="'number'"
-                  v-model="formData.harga_akhir"
-                ></BaseInput>
-                <p class="form-wrapper__description">
-                  Hanya tuliskan nominalnya saja tanpa dipisahkan titik, contohnya 1000000
-                </p>
-                <p class="error" v-if="setErrors.harga_akhir" v-text="setErrors.harga_akhir[0]"></p>
-              </div>
-              <div class="form-wrapper__form-group">
                 <BaseLabel :for="'tanggal-input'" :value="'Tanggal'"></BaseLabel>
                 <BaseInput
                   :id="'tanggal-input'"
@@ -267,29 +259,6 @@ onMounted(async () => {
                   v-text="setErrors.id_kategori_barang[0]"
                 ></p>
               </div>
-              <div class="form-wrapper__form-group">
-                <BaseLabel :for="'user-select'" :value="'Pemilik Asset Lelang'"></BaseLabel>
-                <BaseSelect
-                  id="user-select"
-                  :options="users"
-                  v-if="!isLoading && users.length !== 0"
-                  v-model="formData.id_user"
-                >
-                  <template #options>
-                    <option>Cari pemilik</option>
-                    <option v-for="item in users" :key="item.id" :value="item.id_user">
-                      {{ item.username }}
-                    </option>
-                  </template>
-                </BaseSelect>
-
-                <BaseSelect v-else>
-                  <template #options
-                    ><option>Sedang memuat pengguna...</option></template
-                  ></BaseSelect
-                >
-                <p class="error" v-if="setErrors.id_user" v-text="setErrors.id_user[0]"></p>
-              </div>
               <BaseButton
                 class="form-wrapper_btn"
                 :disabled="isLoading"
@@ -305,12 +274,20 @@ onMounted(async () => {
               <div class="form-wrapper__form-group">
                 <BaseLabel :value="'Tanggal Mulai'" :for="'tanggal-mulai-input'"></BaseLabel>
                 <BaseInput :type="'datetime-local'" v-model="formData.tgl_mulai_lelang"></BaseInput>
-                <p class="error" v-if="setErrors.tgl_mulai_lelang" v-text="setErrors.tgl_mulai_lelang?.[0]"></p>
+                <p
+                  class="error"
+                  v-if="setErrors.tgl_mulai_lelang"
+                  v-text="setErrors.tgl_mulai_lelang?.[0]"
+                ></p>
               </div>
               <div class="form-wrapper__form-group">
                 <BaseLabel :value="'Tanggal Berakhir'" :for="'tanggal-akhir-input'"></BaseLabel>
                 <BaseInput :type="'datetime-local'" v-model="formData.tgl_akhir_lelang"></BaseInput>
-                <p class="error" v-if="setErrors.tgl_akhir_lelang" v-text="setErrors.tgl_akhir_lelang?.[0]"></p>
+                <p
+                  class="error"
+                  v-if="setErrors.tgl_akhir_lelang"
+                  v-text="setErrors.tgl_akhir_lelang?.[0]"
+                ></p>
               </div>
             </div>
           </section>

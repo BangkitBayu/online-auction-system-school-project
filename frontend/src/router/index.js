@@ -11,6 +11,7 @@ import FormAddAssetView from '@/views/pages/auctions/FormAddAssetView.vue'
 import FormEditAssetView from '@/views/pages/auctions/FormEditAssetView.vue'
 import PublicAuctionDetailsView from '@/views/pages/auctions/PublicAuctionDetailsView.vue'
 import AuctionReportsView from '@/views/pages/reports/AuctionReportsView.vue'
+import AuctionsHistoryView from '@/views/pages/auctions/AuctionsHistoryView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -82,6 +83,15 @@ const router = createRouter({
       component: LiveAuctionView,
       meta: {
         role: ['administrator', 'petugas'],
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/auctions/history',
+      name: 'auctionsHistory',
+      component: AuctionsHistoryView,
+      meta: {
+        role: ['masyarakat'],
         requiresAuth: true
       }
     },

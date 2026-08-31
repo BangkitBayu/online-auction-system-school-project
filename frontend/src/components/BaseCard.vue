@@ -40,11 +40,6 @@ const props = defineProps({
           <span class="label">Harga Awal</span>
           <p class="value">{{ moneyFormater(auction.barang?.harga_awal) }}</p>
         </div>
-        <span class="divider"></span>
-        <div class="info-item">
-          <span class="label">Harga Limit</span>
-          <p class="value">{{ moneyFormater(auction.harga_limit) }}</p>
-        </div>
       </div>
 
       <!-- <div class="badge" :class="statusBadgeClass">

@@ -108,13 +108,6 @@ onMounted(async () => {
                 v-text="moneyFormater(auctionDetails.barang?.harga_awal)"
               ></h3>
             </section>
-            <section class="col">
-              <p class="auction-details__label">Harga Limit</p>
-              <h3
-                class="auction-details__price"
-                v-text="moneyFormater(auctionDetails.harga_limit)"
-              ></h3>
-            </section>
           </div>
 
           <div class="col--end col--red">

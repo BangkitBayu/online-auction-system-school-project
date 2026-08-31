@@ -49,13 +49,23 @@ const handleLogout = async () => {
         </li>
       </ul>
     </section>
-    <b-dropdown
-      :dropdown-value="'Lelang'"
-      v-if="user.role === 'administrator' || user.role === 'petugas'"
-    >
+    <b-dropdown :dropdown-value="'Lelang'">
       <template #dropdown-items>
-        <b-dropdown-item :target="'assetAuctions'" :value="'Asset lelang'"></b-dropdown-item>
-        <b-dropdown-item :target="'liveAuctions'" :value="'Lelang berlangsung'"></b-dropdown-item>
+        <b-dropdown-item
+          :target="'assetAuctions'"
+          :value="'Asset lelang'"
+          v-if="user.role === 'administrator' || user.role === 'petugas'"
+        ></b-dropdown-item>
+        <b-dropdown-item
+          :target="'liveAuctions'"
+          :value="'Lelang berlangsung'"
+          v-if="user.role === 'administrator' || user.role === 'petugas'"
+        ></b-dropdown-item>
+        <b-dropdown-item
+          :target="'liveAuctions'"
+          :value="'Riwayat lelang'"
+          v-if="user.role === 'masyarakat'"
+        ></b-dropdown-item>
       </template>
     </b-dropdown>
     <b-dropdown :dropdown-value="'Petugas'" v-if="user.role === 'administrator'">

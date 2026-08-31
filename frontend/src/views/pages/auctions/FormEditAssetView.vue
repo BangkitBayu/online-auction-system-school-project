@@ -42,8 +42,6 @@ const formData = reactive({
   harga_awal: '',
   deskripsi_barang: '',
   id_kategori_barang: '',
-  id_user: '',
-  harga_akhir: '',
   tgl_mulai_lelang: '',
   tgl_akhir_lelang: '',
 })
@@ -71,8 +69,6 @@ const getItemById = async (id) => {
       formData.deskripsi_barang = asset.value.deskripsi_barang || ''
       formData.id_kategori_barang = asset.value.id_kategori_barang || ''
       formData.tgl = asset.value.tgl || ''
-      formData.id_user = asset.value.lelang?.id_user || ''
-      formData.harga_akhir = asset.value.lelang?.harga_akhir || ''
       formData.tgl_mulai_lelang = asset.value.lelang?.tgl_mulai_lelang || ''
       formData.tgl_akhir_lelang = asset.value.lelang?.tgl_akhir_lelang || ''
     }
@@ -122,8 +118,6 @@ const submitData = async () => {
   payload.append('harga_awal', formData.harga_awal)
   payload.append('deskripsi_barang', formData.deskripsi_barang)
   payload.append('id_kategori_barang', formData.id_kategori_barang)
-  payload.append('id_user', formData.id_user)
-  payload.append('harga_akhir', formData.harga_akhir)
   payload.append('tgl_mulai_lelang', formData.tgl_mulai_lelang)
   payload.append('tgl_akhir_lelang', formData.tgl_akhir_lelang)
 
@@ -227,20 +221,6 @@ onMounted(() => {
                   </p>
                   <p class="error" v-if="setErrors.harga_awal" v-text="setErrors.harga_awal?.[0]"></p>
                 </div>
-
-                <div class="form-wrapper__form-group">
-                  <BaseLabel :for="'harga-akhir-input'" :value="'Harga Akhir'"></BaseLabel>
-                  <BaseInput
-                    :id="'harga-akhir-input'"
-                    :type="'number'"
-                    v-model="formData.harga_akhir"
-                  ></BaseInput>
-                  <p class="form-wrapper__description">
-                    Hanya tuliskan nominalnya saja tanpa dipisahkan titik, contohnya 1000000
-                  </p>
-                  <p class="error" v-if="setErrors.harga_akhir" v-text="setErrors.harga_akhir?.[0]"></p>
-                </div>
-
                 <div class="form-wrapper__form-group">
                   <BaseLabel :for="'tanggal-input'" :value="'Tanggal'"></BaseLabel>
                   <BaseInput
@@ -296,30 +276,6 @@ onMounted(() => {
                     v-if="setErrors.id_kategori_barang"
                     v-text="setErrors.id_kategori_barang?.[0]"
                   ></p>
-                </div>
-
-                <div class="form-wrapper__form-group">
-                  <BaseLabel :for="'user-select'" :value="'Pemilik Asset Lelang'"></BaseLabel>
-                  <BaseSelect
-                    id="user-select"
-                    :options="users"
-                    v-if="!isLoading && users.length !== 0"
-                    v-model="formData.id_user"
-                  >
-                    <template #options>
-                      <option value="">Cari pemilik</option>
-                      <option v-for="item in users" :key="item.id_user" :value="item.id_user">
-                        {{ item.username }}
-                      </option>
-                    </template>
-                  </BaseSelect>
-
-                  <BaseSelect v-else>
-                    <template #options>
-                      <option>Sedang memuat pengguna...</option>
-                    </template>
-                  </BaseSelect>
-                  <p class="error" v-if="setErrors.id_user" v-text="setErrors.id_user?.[0]"></p>
                 </div>
               </div>
             </section>
