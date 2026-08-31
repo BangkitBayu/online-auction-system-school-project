@@ -225,20 +225,27 @@ class ItemController extends Controller
     {
         $user_id = $request->user()->id_user;
 
-        $count_bid_sub = DB::table('history_lelang as h_sub')->selectRaw('max(h_sub.penawaran_harga)')->whereColumn('h_sub.id_lelang', '=', 'lelang.id_lelang');
+        $latest_history_ids =  DB::table('history_lelang')
+            ->selectRaw('MAX(id_history) as id_history')
+            ->where('id_user', $user_id)
+            ->groupBy('id_lelang');
 
         $auctions_histories = DB::table('history_lelang as history')
             ->where('history.id_user',  '=', $user_id)
+            ->joinSub($latest_history_ids, 'latest', function ($join) {
+                $join->on('history.id_history', '=', 'latest.id_history');
+            })
             ->join('tb_lelang as lelang', 'lelang.id_lelang', '=', 'history.id_lelang')
             ->join('tb_barang as barang', 'barang.id_barang', '=', 'lelang.id_barang')
+            ->latest('history.created_at')
             ->select(
                 [
                     // Data Lelang
                     'lelang.id_lelang',
-                    'lelang.harga_akhir',
+                    'lelang.harga_akhir as penawaran_tertinggi_saat_ini',
                     'lelang.tgl_akhir_lelang as tgl_selesai',
                     'lelang.status as status_lelang',
-
+                    'lelang.id_user as id_pemenang',
                     // Data histori
                     'history.penawaran_harga as penawaran_peserta',
 
@@ -246,7 +253,7 @@ class ItemController extends Controller
                     'barang.nama_barang'
                 ]
             )
-            ->selectSub($count_bid_sub, 'penawaran_tertinggi_saat_ini')
+            ->orderByDesc('lelang.tgl_akhir_lelang')
             ->get();
 
         return response()->json(['message' => 'Successfully retrieved auctions histories', 'data' => AuctionHistoryResources::collection($auctions_histories)], 200);

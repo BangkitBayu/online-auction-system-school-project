@@ -16,11 +16,12 @@ class AuctionHistoryResources extends JsonResource
     {
         return [
             'id_lelang' => $this->id_lelang,
+            'id_pemenang' => $this->id_pemenang,
             'nama_lot' => $this->nama_barang,
             'tgl_selesai' => $this->tgl_selesai,
             'status_lelang' => $this->status_lelang,
-            'penawaran_tertinggi_saat_ini' => (float) $this->penawaran_tertinggi_saat_ini,
-            'penawaran_peserta' => (float) $this->penawaran_peserta
+            'penawaran_peserta' => (float) $this->penawaran_peserta,
+            'penawaran_tertinggi_saat_ini' => (float) $this->penawaran_tertinggi_saat_ini
         ];
     }
 }
