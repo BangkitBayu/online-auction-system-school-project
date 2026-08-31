@@ -6,4 +6,16 @@ export default class OfficerService {
 
     return response
   }
+
+  async store(nama_petugas, username, telp, password, confirm_password) {
+    const response = await api.post('/officers', {
+      nama_petugas,
+      username,
+      telp,
+      password,
+      confirm_password
+    })
+
+    return response
+  }
 }

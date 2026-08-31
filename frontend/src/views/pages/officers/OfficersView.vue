@@ -81,7 +81,7 @@ onMounted(() => {
       <section class="officer-wrapper">
         <div class="row">
           <BSearchBar v-model="officerKeyword" @handle-search="searchOfficer"></BSearchBar>
-          <BaseButton class="officer-wrapper__btn"
+          <BaseButton class="officer-wrapper__btn" @click="$router.push({ name: 'officerAddForm' })"
             ><template #btn-content>Tambah Petugas</template></BaseButton
           >
         </div>

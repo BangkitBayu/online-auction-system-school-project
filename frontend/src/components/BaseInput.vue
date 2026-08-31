@@ -12,6 +12,7 @@ const props = defineProps({
       [
         'hidden',
         'email',
+        'phone',
         'text',
         'number',
         'date',
