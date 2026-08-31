@@ -24,7 +24,6 @@ class HomeController extends Controller
                 'lelang.tgl_mulai_lelang',
                 'lelang.tgl_akhir_lelang',
                 'lelang.status as status_lelang',
-                'lelang.harga_akhir as harga_limit',
                 'barang.id_barang',
                 'barang.nama_barang',
                 'barang.thumbnail as thumbnail_url',
@@ -77,7 +76,6 @@ class HomeController extends Controller
                     'lelang.id_lelang as id_lelang',
                     'lelang.tgl_mulai_lelang',
                     'lelang.tgl_akhir_lelang',
-                    'lelang.harga_akhir as harga_limit',
                 ])
                 ->first();
             // dd($auction);

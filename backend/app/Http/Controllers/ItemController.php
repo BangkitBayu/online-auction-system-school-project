@@ -52,10 +52,8 @@ class ItemController extends Controller
         ]);
 
         $auction = Lelang::create([
-            'id_user' => $payload['id_user'],
             'tgl_mulai_lelang' => $payload['tgl_mulai_lelang'],
             'tgl_akhir_lelang' => $payload['tgl_akhir_lelang'],
-            'harga_akhir' => $payload['harga_akhir'],
             'id_petugas' => $request->user()->id_petugas,
             'id_barang' => $auction->id_barang,
             'status' =>  $payload['tgl_akhir_lelang'] <= now() ? 'ditutup' : 'dibuka'
@@ -220,5 +218,12 @@ class ItemController extends Controller
         ]);
 
         return response()->json(['message' => 'successfully join bidding on auction ID ' . $id], 201);
+    }
+
+    public function get_histories(Request $request): JsonResponse
+    {
+        $user_id = $request->user()->id_user;
+
+
     }
 }

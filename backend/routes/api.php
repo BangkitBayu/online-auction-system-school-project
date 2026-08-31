@@ -50,6 +50,8 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('/{id}', [ItemController::class, 'show']);
         Route::delete('/{id}', [ItemController::class, 'destroy']);
         Route::post('/{id}/join-bid', [ItemController::class, 'join_bid'])->withoutMiddleware(['role:administrator,petugas']);
+
+        Route::post('/histories', [ItemController::class, 'get_histories'])->withoutMiddleware(['role:administrator,petugas'])->middleware(['role:masyarakat']);
     });
 
     Route::middleware(['auth:sanctum', 'role:administrator'])->prefix('officers')->group(function () {
