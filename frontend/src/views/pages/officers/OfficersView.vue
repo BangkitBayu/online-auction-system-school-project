@@ -6,20 +6,59 @@ import BSearchBar from '@/components/searchBar/b-search-bar.vue'
 import BTableData from '@/components/table/b-table-data.vue'
 import BTable from '@/components/table/b-table.vue'
 import UserProfile from '@/components/UserProfile.vue'
+import OfficerService from '@/services/OfficerService'
 import BaseAside from '@/views/administrator/components/BaseAside.vue'
 import BaseLayoutDashboard from '@/views/templates/BaseLayoutDashboard.vue'
-import { ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
+import IconDelete from '@/components/icons/IconDelete.vue'
+import IconEdit from '@/components/icons/IconEdit.vue'
+import IconClose from '@/components/icons/IconClose.vue'
 
 let isOpenAside = ref(true)
-
-function searchOfficer() {
-  alert('aloo')
-}
+const officerSvc = new OfficerService()
+let officers = ref([])
+let officerKeyword = ref('')
+let id_petugas = ref(null)
+let isOpenModal = ref(false)
 
 let isLoading = ref(false)
 
-let officers = ref([])
-let officerWanted = ref([])
+const officerWanted = computed(() => {
+  if (officerKeyword.value)
+    return officers.value.filter((officer) => {
+      return (
+        officer.username.toLowerCase().includes(officerKeyword.value.toLowerCase()) ||
+        officer.nama_petugas.toLowerCase().includes(officerKeyword.value.toLowerCase())
+      )
+    })
+  return officers.value
+})
+
+const fetchOfficers = async () => {
+  try {
+    isLoading.value = true
+
+    const response = await officerSvc.index()
+
+    if (response.status === 200) {
+      officers.value = response.data.data
+    }
+  } catch (error) {
+    isLoading.value = false
+    console.error(error)
+  } finally {
+    isLoading.value = false
+  }
+}
+
+const openedModalDelete = (id_petugas) => {
+  id_petugas.value = id_petugas
+  isOpenModal.value = true
+}
+
+onMounted(() => {
+  fetchOfficers()
+})
 </script>
 <template>
   <BaseLayoutDashboard>
@@ -41,7 +80,7 @@ let officerWanted = ref([])
       </section>
       <section class="officer-wrapper">
         <div class="row">
-          <BSearchBar @handle-search="searchOfficer"></BSearchBar>
+          <BSearchBar v-model="officerKeyword" @handle-search="searchOfficer"></BSearchBar>
           <BaseButton class="officer-wrapper__btn"
             ><template #btn-content>Tambah Petugas</template></BaseButton
           >
@@ -62,13 +101,69 @@ let officerWanted = ref([])
               <tr v-if="isLoading">
                 <td class="officer-wrapper__table-info" colspan="5">Sedang memuat data...</td>
               </tr>
-              <tr v-else-if="officers.length === 0 && !isLoading">
+              <tr v-else-if="officerWanted.length === 0 && !isLoading">
                 <td class="officer-wrapper__table-info" colspan="5">Daftar petugas kosong</td>
+              </tr>
+              <tr v-for="item in officerWanted" :key="item.id_petugas" v-else>
+                <BTableData>{{ item.id_petugas }}</BTableData>
+                <BTableData>{{ item.nama_petugas }}</BTableData>
+                <BTableData>{{ item.username }}</BTableData>
+                <BTableData>{{ item.telp }}</BTableData>
+                <BTableData>
+                  <div class="officer-wrapper__table-cta-container">
+                    <BaseButton
+                      class="officer-wrapper__btn"
+                      @click="
+                        $router.push({ name: 'formEditAsset', params: { id: item.id_barang } })
+                      "
+                      ><template #btn-content><IconEdit></IconEdit></template
+                    ></BaseButton>
+                    <BaseButton
+                      class="officer-wrapper__btn"
+                      :variant="'danger'"
+                      @click="openedModalDelete(item.id_petugas)"
+                      ><template #btn-content><IconDelete></IconDelete></template
+                    ></BaseButton>
+                  </div>
+                </BTableData>
               </tr>
             </template>
           </BTable>
         </div>
       </section>
+      <BaseModal :is-open="isOpenModal">
+        <template #modalHeader>
+          <div class="row">
+            <h3 class="modal-wrapper__heading">Konfirmasi Hapus</h3>
+            <button class="modal-wrapper__button" @click="isOpenModal = !isOpenModal">
+              <IconClose></IconClose>
+            </button>
+          </div>
+        </template>
+        <template #modalBody>
+          <p class="modal-wrapper__description">
+            Apakah anda yakin ingin menghapus asset lelang ini?
+          </p>
+        </template>
+        <template #modalFooter>
+          <div class="row--end">
+            <BaseButton class="modal-wrapper__button" @click="isOpenModal = !isOpenModal"
+              ><template #btn-content>Cancel</template></BaseButton
+            >
+            <BaseButton
+              class="modal-wrapper__button--secondary"
+              :variant="'danger'"
+              :disabled="isLoading ? 'true' : ''"
+              :class="isLoading ? 'btn-disabled' : ''"
+              @click="destroyItem(itemId)"
+              ><template #btn-content
+                ><p v-if="isLoading">Loading...</p>
+                <p v-else>Hapus</p></template
+              ></BaseButton
+            >
+          </div>
+        </template>
+      </BaseModal>
     </template>
   </BaseLayoutDashboard>
 </template>
@@ -84,6 +179,10 @@ let officerWanted = ref([])
   align-items: center;
   margin-block: 0.5rem 1.5rem;
   gap: 0.8rem;
+}
+
+.officer-wrapper__btn {
+  max-width: fit-content;
 }
 
 .officer-wrapper {
@@ -112,5 +211,49 @@ let officerWanted = ref([])
   padding: 2rem;
   text-align: center;
   color: var(--text-description-color);
+}
+
+.officer-wrapper__table-cta-container {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.modal-wrapper__heading {
+  color: var(--text-heading-color);
+}
+
+.modal-wrapper__description {
+  color: var(--text-description-color);
+  text-align: center;
+}
+
+.modal-wrapper__button {
+  padding: 8px;
+  border: 1px solid #c5c5c5c5;
+  color: var(--text-heading-color);
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  width: max-content !important;
+}
+
+.modal-wrapper__button--secondary {
+  width: max-content;
+}
+
+.modal-wrapper__button:hover {
+  background-color: #c3c3c3c5;
+}
+
+.btn-disabled {
+  background-color: gray;
+}
+
+.btn-disabled:hover {
+  opacity: 100%;
 }
 </style>

@@ -28,7 +28,7 @@ const model = defineModel()
         <input type="search" :placeholder="props.searchPlaceholder" v-model="model" required />
       </div>
 
-      <button type="button" @click="$emit('handle-search')" class="search-btn">Cari</button>
+      <!-- <button type="button" @click="$emit('handle-search')" class="search-btn">Cari</button> -->
     </form>
   </div>
 </template>
