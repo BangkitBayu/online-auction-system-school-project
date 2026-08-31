@@ -91,9 +91,7 @@ const user = JSON.parse(localStorage.getItem('user'))
             <p>Anda belum mengikuti lelang</p>
           </div>
 
-          <router-link
-            to=""
-            v-else
+          <div
             class="item--horizontal"
             v-for="item in dashboardData.lelang_segera_berakhir"
             :key="item.id_lelang"
@@ -110,7 +108,7 @@ const user = JSON.parse(localStorage.getItem('user'))
               <span class="item__label" v-text="item.nama_lot"></span>
               <p class="item__value">{{ estimateTime(item.tgl_selesai) }}</p>
             </div>
-          </router-link>
+          </div>
         </div>
       </section>
     </template>

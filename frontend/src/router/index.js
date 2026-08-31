@@ -12,6 +12,7 @@ import FormEditAssetView from '@/views/pages/auctions/FormEditAssetView.vue'
 import PublicAuctionDetailsView from '@/views/pages/auctions/PublicAuctionDetailsView.vue'
 import AuctionReportsView from '@/views/pages/reports/AuctionReportsView.vue'
 import AuctionsHistoryView from '@/views/pages/auctions/AuctionsHistoryView.vue'
+import OfficersView from '@/views/pages/officers/OfficersView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -115,6 +116,15 @@ const router = createRouter({
       component: AuctionReportsView,
       meta: {
         role: ['administrator', 'petugas'],
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/officers',
+      name: 'officers',
+      component: OfficersView,
+      meta: {
+        role: ['administrator'],
         requiresAuth: true
       }
     },

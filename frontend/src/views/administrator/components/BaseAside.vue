@@ -70,8 +70,7 @@ const handleLogout = async () => {
     </b-dropdown>
     <b-dropdown :dropdown-value="'Petugas'" v-if="user.role === 'administrator'">
       <template #dropdown-items>
-        <b-dropdown-item :target="'home'" :value="'Tinjau petugas'"></b-dropdown-item>
-        <b-dropdown-item :target="'home'" :value="'Tambah petugas'"></b-dropdown-item>
+        <b-dropdown-item :target="'officers'" :value="'Kelola Petugas'"></b-dropdown-item>
       </template>
     </b-dropdown>
     <b-dropdown

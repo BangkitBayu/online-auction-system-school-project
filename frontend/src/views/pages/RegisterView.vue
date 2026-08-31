@@ -14,7 +14,7 @@ const router = useRouter()
 let isShowPw = ref(false)
 let isShowConfirmPw = ref(false)
 let selectedRoleId = ref(0)
-let role = ref('public')
+let role = ref('masyarakat')
 
 let isLoading = ref(false)
 let setErrors = ref([])
