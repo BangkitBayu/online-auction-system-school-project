@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\JoinBidRequest;
 use App\Http\Requests\storeAuctionRequest;
 use App\Http\Requests\updateAuctionRequest;
+use App\Http\Resources\AuctionHistoryResources;
 use App\Models\Barang;
 use App\Models\HistoryLelang;
 use App\Models\Lelang;
@@ -224,6 +225,30 @@ class ItemController extends Controller
     {
         $user_id = $request->user()->id_user;
 
+        $count_bid_sub = DB::table('history_lelang as h_sub')->selectRaw('max(h_sub.penawaran_harga)')->whereColumn('h_sub.id_lelang', '=', 'lelang.id_lelang');
 
+        $auctions_histories = DB::table('history_lelang as history')
+            ->where('history.id_user',  '=', $user_id)
+            ->join('tb_lelang as lelang', 'lelang.id_lelang', '=', 'history.id_lelang')
+            ->join('tb_barang as barang', 'barang.id_barang', '=', 'lelang.id_barang')
+            ->select(
+                [
+                    // Data Lelang
+                    'lelang.id_lelang',
+                    'lelang.harga_akhir',
+                    'lelang.tgl_akhir_lelang as tgl_selesai',
+                    'lelang.status as status_lelang',
+
+                    // Data histori
+                    'history.penawaran_harga as penawaran_peserta',
+
+                    // Data barang
+                    'barang.nama_barang'
+                ]
+            )
+            ->selectSub($count_bid_sub, 'penawaran_tertinggi_saat_ini')
+            ->get();
+
+        return response()->json(['message' => 'Successfully retrieved auctions histories', 'data' => AuctionHistoryResources::collection($auctions_histories)], 200);
     }
 }

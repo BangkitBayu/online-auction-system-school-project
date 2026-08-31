@@ -15,7 +15,7 @@ class AuctionController extends Controller
      */
     public function index(): JsonResponse
     {
-        $auction = Lelang::select(['id_lelang', 'tgl_mulai_lelang', 'tgl_akhir_lelang', 'status', 'id_barang'])->withCount('history_lelangs')->withMax('history_lelangs', 'penawaran_harga')->with('barang:id_barang,nama_barang')->paginate(5);
+        $auction = Lelang::where('status', '=', 'dibuka')->select(['id_lelang', 'tgl_mulai_lelang', 'tgl_akhir_lelang', 'status', 'id_barang'])->withCount('history_lelangs')->withMax('history_lelangs', 'penawaran_harga')->with('barang:id_barang,nama_barang')->paginate(5);
 
         return response()->json(['message' => 'Successfully retrieved live auctions data', 'data' => $auction], 200);
     }

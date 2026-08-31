@@ -24,10 +24,11 @@ class AuctionBidLimit implements ValidationRule
     {
         $limit_price = DB::table('tb_lelang as lelang')
             ->where('lelang.id_lelang', '=', $this->id_lelang)
-            ->value('harga_akhir');
+            ->join('tb_barang as barang', 'barang.id_barang', '=', 'lelang.id_barang')
+            ->value('barang.harga_awal');
 
-        if ($value > $limit_price) {
-            $fail('Penawaran harga melebihi limit yang ditentukan!');
+        if ($value < $limit_price) {
+            $fail('Penawaran harga harus diatas harga minimum!');
         }
     }
 }

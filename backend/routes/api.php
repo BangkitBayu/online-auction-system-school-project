@@ -41,6 +41,7 @@ Route::group(['prefix' => 'v1'], function () {
 
     // Grouping middlware and prefix
     Route::middleware(['auth:sanctum', 'role:administrator,petugas'])->prefix('auctions')->group(function () {
+        Route::get('/histories', [ItemController::class, 'get_histories'])->withoutMiddleware(['role:administrator,petugas']);
         Route::get('/live', [AuctionController::class, 'index']);
         Route::get('/live/{id_lelang}', [AuctionController::class, 'show']);
 
@@ -50,8 +51,6 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('/{id}', [ItemController::class, 'show']);
         Route::delete('/{id}', [ItemController::class, 'destroy']);
         Route::post('/{id}/join-bid', [ItemController::class, 'join_bid'])->withoutMiddleware(['role:administrator,petugas']);
-
-        Route::post('/histories', [ItemController::class, 'get_histories'])->withoutMiddleware(['role:administrator,petugas'])->middleware(['role:masyarakat']);
     });
 
     Route::middleware(['auth:sanctum', 'role:administrator'])->prefix('officers')->group(function () {

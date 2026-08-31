@@ -15,7 +15,7 @@ class CheckRole
      */
     public function handle(Request $request, Closure $next, ...$roles): Response
     {
-        if (!in_array($request->user()->level->level, $roles)) {
+        if (!in_array($request->user()->level?->level, $roles)) {
             return response()->json(['message' => "Your'e not allowed access"], 403);
         }
         return $next($request);
