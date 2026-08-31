@@ -35,9 +35,4 @@ export default class ItemServices {
     const response = await api.delete(`/auctions/${id}`)
     return response
   }
-
-  async getUsers() {
-    const response = await api.get(`/users`)
-    return response
-  }
 }

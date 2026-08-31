@@ -16,4 +16,10 @@ export default class AuctionServices {
 
     return response
   }
+
+  async getHistories() {
+    const response = await api.get('/auctions/histories')
+
+    return response
+  }
 }

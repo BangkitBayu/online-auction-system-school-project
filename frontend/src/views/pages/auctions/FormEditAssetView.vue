@@ -22,7 +22,6 @@ const route = useRoute()
 
 let categoriesAuction = ref([])
 let asset = ref({})
-let users = ref([])
 
 let isOpenMenu = ref(true)
 let isLoading = ref(false)
@@ -93,20 +92,6 @@ const getCategoriesAuction = async () => {
   }
 }
 
-const getUsers = async () => {
-  try {
-    isLoading.value = true
-    const response = await itemSvc.getUsers()
-    if (response.status === 200) {
-      users.value = response.data.data
-    }
-  } catch (error) {
-    console.error(error)
-  } finally {
-    isLoading.value = false
-  }
-}
-
 const submitData = async () => {
   const id = route.params.id
   setErrors.value = {}
@@ -146,7 +131,6 @@ onMounted(() => {
     getItemById(route.params.id)
   }
   getCategoriesAuction()
-  getUsers()
 })
 </script>
 

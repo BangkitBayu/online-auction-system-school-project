@@ -62,7 +62,7 @@ const handleLogout = async () => {
           v-if="user.role === 'administrator' || user.role === 'petugas'"
         ></b-dropdown-item>
         <b-dropdown-item
-          :target="'liveAuctions'"
+          :target="'auctionsHistory'"
           :value="'Riwayat lelang'"
           v-if="user.role === 'masyarakat'"
         ></b-dropdown-item>

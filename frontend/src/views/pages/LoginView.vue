@@ -63,7 +63,7 @@ const submitData = async () => {
     localStorage.setItem('token', data.token)
     localStorage.setItem(
       'user',
-      JSON.stringify({ username: data.data.username, role: data.data.role }),
+      JSON.stringify({ id: data.data.id, username: data.data.username, role: data.data.role }),
     )
 
     router.push({ name: 'dashboardView' })

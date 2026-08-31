@@ -73,22 +73,6 @@ const getCategoriesAuction = async () => {
   }
 }
 
-const getUsers = async () => {
-  try {
-    isLoading.value = true
-    const response = await itemSvc.getUsers()
-
-    if (response.status === 200) {
-      users.value = response.data.data
-    }
-  } catch (error) {
-    isLoading.value = false
-    console.error(error)
-  } finally {
-    isLoading.value = false
-  }
-}
-
 const submitData = async () => {
   const {
     nama_barang,
@@ -132,7 +116,6 @@ const submitData = async () => {
 
 onMounted(async () => {
   getCategoriesAuction()
-  getUsers()
 })
 </script>
 
