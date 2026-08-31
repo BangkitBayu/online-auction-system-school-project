@@ -32,7 +32,7 @@ class CheckAuctionStatus extends Command
     {
 
 
-        $expired_auctions = Lelang::with(['winner.masyarakats'])
+        $expired_auctions = Lelang::with(['winner', 'winner.masyarakats'])
             ->where('tgl_akhir_lelang', '<=', now())
             ->where('status', '=', 'dibuka')
             ->get();
@@ -49,13 +49,15 @@ class CheckAuctionStatus extends Command
                         $this->info('Pengumuman lelang kepada ' . $winner_user->username);
                         Mail::to($winner_user->email)->queue(new SendEmail($winner_user));
                     }
+                    $winner_history = $auction->winner;
+
+
+                    Lelang::whereIn('id_lelang', $auction_ids)->update(['status' => 'ditutup', 'harga_akhir' => $winner_history->penawaran_harga, 'id_user' => $winner_history->id_user]);
                 } catch (Throwable $error) {
                     $this->info($error->getMessage());
                 }
             }
 
-
-            Lelang::whereIn('id_lelang', $auction_ids)->update(['status' => 'ditutup']);
 
 
             return Command::SUCCESS;
