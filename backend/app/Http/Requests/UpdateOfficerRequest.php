@@ -29,10 +29,10 @@ class UpdateOfficerRequest extends FormRequest
         $officerId = $this->route('id'); // Mengambil id petugas dari route param
         return [
             'nama_petugas' => ['required', 'regex:/^[A-Z][a-z]+(\s[A-Z][a-z]+)*$/', 'max:255'],
-            'username' => ['required', 'unique:tb_petugas,username', 'max:25'],
+            'username' => ['required', Rule::unique('tb_petugas', 'username')->ignore($officerId, 'id_petugas'), 'max:25'],
             'telp' => ['required', 'regex:/^08[0-9]+$/', 'min:10', 'max:12'],
-            'password' => ['required', 'min:8', 'max:12'],
-            'confirm_password' => ['required', 'confirmed:password']
+            'password' => ['sometimes', 'min:8', 'max:12'],
+            'confirm_password' => ['sometimes', 'confirmed:password']
         ];
     }
 

@@ -20,7 +20,7 @@ return new class extends Migration
 
             $table->foreignId('id_user')->nullable()->constrained('tb_masyarakat', 'id_user')->cascadeOnUpdate()->cascadeOnDelete();
             $table->foreignId('id_barang')->nullable()->constrained('tb_barang', 'id_barang')->cascadeOnUpdate()->cascadeOnDelete();
-            $table->foreignId('id_petugas')->nullable()->constrained('tb_petugas', 'id_petugas')->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreignId('id_petugas')->nullable()->constrained('tb_petugas', 'id_petugas')->cascadeOnUpdate()->nullOnDelete();
 
             $table->timestamps();
         });

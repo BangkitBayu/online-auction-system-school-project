@@ -16,7 +16,7 @@ class OfficerController extends Controller
      */
     public function index(): JsonResponse
     {
-        $officers = Petugas::select(['id_petugas', 'nama_petugas', 'username', 'telp'])->where('id_level', 2)->paginate(10);
+        $officers = Petugas::orderByDesc('created_at')->select(['id_petugas', 'nama_petugas', 'username', 'telp'])->where('id_level', 2)->get();
 
         return response()->json(['message' => 'Successfully retrieved officers data', 'data' => $officers], 200);
     }
@@ -46,7 +46,7 @@ class OfficerController extends Controller
             'id_level' => 2
         ]);
 
-        return response()->json(['message' => 'New officer with username ' . $officer->username . ' successfully created', 'data' => ['id' => $officer->id_petugas, 'username' => $officer->username, 'role' => $officer->level->level,  'created_at' => $officer->created_at]], 200);
+        return response()->json(['message' => 'New officer with username ' . $officer->username . ' successfully created', 'data' => ['id' => $officer->id_petugas, 'username' => $officer->username, 'role' => $officer->level->level,  'created_at' => $officer->created_at]], 201);
     }
 
     /**
@@ -59,7 +59,7 @@ class OfficerController extends Controller
         if (!$officer) {
             return response()->json(['message' => 'Officer with ID ' . $id . ' not found'], 404);
         }
-        return response()->json(['message' => 'Successfully retrieved officer data', 'data' => $officer], 201);
+        return response()->json(['message' => 'Successfully retrieved officer data', 'data' => $officer], 200);
     }
 
     /**
