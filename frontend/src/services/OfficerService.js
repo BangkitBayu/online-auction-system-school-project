@@ -30,4 +30,10 @@ export default class OfficerService {
 
     return response
   }
+
+  async destroy(id) {
+    const response = await api.delete(`/officers/${id}`)
+
+    return response
+  }
 }

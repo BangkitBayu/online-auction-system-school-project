@@ -1,7 +1,7 @@
 <script setup lang="js">
 import BaseLayoutDashboard from '../templates/BaseLayoutDashboard.vue'
 import HamburgerToggle from '@/components/HamburgerToggle.vue'
-import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 import DashboardHeader from '@/components/DashboardHeader.vue'
 import UserProfile from '@/components/UserProfile.vue'
 import BaseAside from '../administrator/components/BaseAside.vue'
@@ -26,7 +26,7 @@ const estimateTime = (endTime) => {
   let hour = Math.floor(result / 3600000)
   let minute = Math.floor((result / 60000) % 60)
 
-  return `Sisa ${hour} jam ${minute} menit lagi`
+  return `Sisa ${hour <= 0 ? 0 : hour} jam ${minute <= 0 ? 0 : minute} menit lagi`
 }
 
 const fetchUserData = async () => {

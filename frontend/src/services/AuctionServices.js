@@ -1,8 +1,8 @@
 import api from "@/lib/httpInterceptors";
 
 export default class AuctionServices {
-  async index(params = {}) {
-    const response = await api.get(`/auctions/live`, { params })
+  async index() {
+    const response = await api.get(`/auctions/live`)
     return response
   }
 

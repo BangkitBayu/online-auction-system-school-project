@@ -1,7 +1,7 @@
 <script setup lang="js">
 import BaseButton from '@/components/BaseButton.vue'
 import HamburgerToggle from '@/components/HamburgerToggle.vue'
-import { onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import DashboardHeader from '@/components/DashboardHeader.vue'
 import UserProfile from '@/components/UserProfile.vue'
 import BaseLayoutDashboard from '@/views/templates/BaseLayoutDashboard.vue'
@@ -15,7 +15,6 @@ import BasePagination from '@/components/BasePagination.vue'
 import IconDetail from '@/components/icons/IconDetail.vue'
 import IconEdit from '@/components/icons/IconEdit.vue'
 import IconDelete from '@/components/icons/IconDelete.vue'
-import { useRouter } from 'vue-router'
 import dateIsoFormater from '@/utils/dateIsoFormater'
 import BaseModal from '@/components/BaseModal.vue'
 import IconClose from '@/components/icons/IconClose.vue'
@@ -24,8 +23,9 @@ const user = JSON.parse(localStorage.getItem('user'))
 
 const itemSvc = new ItemServices()
 
-let auctions = reactive([])
-let pagination = ref({})
+let auctionKeyword = ref(null)
+
+let auctions = ref([])
 let isLoading = ref(false)
 
 let isOpenMenu = ref(true)
@@ -40,16 +40,23 @@ const openedModalDelete = (id) => {
   itemId.value = id
 }
 
-const getAllAuction = async (page = 1) => {
+const auctionSearched = computed(() => {
+  if (auctionKeyword.value)
+    return auctions.value.filter((auction) => {
+      return auction.nama_barang.toLowerCase().includes(auctionKeyword.value.toLowerCase())
+    })
+  return auctions.value
+})
+
+const getAllAuction = async () => {
   try {
     isLoading.value = true
 
     // Kirim nomor halaman ke service (misal: auctionSvc.index({ page }) atau query string)
-    const response = await itemSvc.index({ page })
+    const response = await itemSvc.index()
 
     if (response.status == 200) {
-      pagination.value = response.data.data
-      auctions = response.data.data.data // Gunakan .value jika auctions adalah ref()
+      auctions.value = response.data.data // Gunakan .value jika auctions adalah ref()
     } else {
       throw response
     }
@@ -101,7 +108,7 @@ onMounted(async () => {
       <h3 class="title-page">Asset Lelang</h3>
       <div class="content-wrapper">
         <div class="top-content-container">
-          <b-search-bar></b-search-bar>
+          <bSearchBar v-model="auctionKeyword"></bSearchBar>
           <BaseButton
             v-if="user.role === 'petugas'"
             class="create-asset-btn"
@@ -124,12 +131,12 @@ onMounted(async () => {
               </template>
               <template #tableBody>
                 <tr v-if="isLoading">
-                  <b-table-data colspan="6" class="info">Sedang memuat data...</b-table-data>
+                  <td colspan="6" class="info">Sedang memuat data...</td>
                 </tr>
-                <tr v-else-if="auctions.length == 0">
-                  <b-table-data colspan="6" class="info">Data masih kosong...</b-table-data>
+                <tr v-else-if="auctionSearched.length === 0 && !isLoading">
+                  <td colspan="6" class="info">Daftar lot lelang tidak ditemukan</td>
                 </tr>
-                <tr v-for="(item, index) in auctions" :key="index" v-else>
+                <tr v-for="item in auctionSearched" :key="item.id_barang" v-else>
                   <b-table-data> {{ item.id_barang }}</b-table-data>
                   <b-table-data>{{ item.nama_barang }}</b-table-data>
                   <b-table-data>{{ dateIsoFormater(item.tgl) }}</b-table-data>
@@ -170,12 +177,6 @@ onMounted(async () => {
               </template>
             </b-table>
           </div>
-          <BasePagination
-            v-if="pagination.last_page"
-            :pagination="pagination"
-            @page-changed="getAllAuction"
-          >
-          </BasePagination>
         </div>
       </div>
       <BaseModal :is-open="isOpenModal">
@@ -273,6 +274,7 @@ header .container {
 }
 
 .table-container .info {
+  padding: 2rem;
   text-align: center !important;
 }
 

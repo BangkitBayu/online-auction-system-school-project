@@ -58,7 +58,7 @@ const joinBid = async () => {
   try {
     isLoading.value = true
     isError.value = false
-    isOpenModal.value = isError.value
+    isOpenModal.value = true
     const response = await auctionSvc.joinBid(idLelang, idBarang, penawaran_harga)
 
     if (response.status === 201) {
@@ -71,12 +71,12 @@ const joinBid = async () => {
     isError.value = true
     if (error.response?.status === 422) {
       setErrors.value = error.response?.data.errors
-      isOpenModal.value = isError.value
+      isOpenModal.value = true
     }
   } finally {
     isLoading.value = false
     isError.value = false
-    isOpenModal.value = isError.value
+    isOpenModal.value = true
   }
 }
 
@@ -147,6 +147,7 @@ onMounted(async () => {
               <p class="modal-wrapper__description">
                 Hanya tuliskan nominalnya saja tanpa dipisahkan titik, contohnya 1000000
               </p>
+              <p class="error" v-if="setErrors.penawaran_harga" v-text="setErrors.penawaran_harga[0]"></p>
             </div>
           </form>
         </section>

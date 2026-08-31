@@ -4,44 +4,31 @@ import HamburgerToggle from '@/components/HamburgerToggle.vue'
 import UserProfile from '@/components/UserProfile.vue'
 import BaseAside from '@/views/administrator/components/BaseAside.vue'
 import BaseLayoutDashboard from '@/views/templates/BaseLayoutDashboard.vue'
-import { onMounted, reactive, ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import bTable from '@/components/table/b-table.vue'
 import bTableHead from '@/components/table/b-table-head.vue'
 import bTableData from '@/components/table/b-table-data.vue'
 import AuctionServices from '@/services/AuctionServices'
-import BasePagination from '@/components/BasePagination.vue'
-import IconDelete from '@/components/icons/IconDelete.vue'
-import IconEdit from '@/components/icons/IconEdit.vue'
 import BaseButton from '@/components/BaseButton.vue'
-import bSearchBar from '@/components/searchBar/b-search-bar.vue'
 import moneyFormater from '@/utils/moneyFormater'
 import IconEyeOn from '@/components/icons/IconEyeOn.vue'
-import BaseModal from '@/components/BaseModal.vue'
-import IconClose from '@/components/icons/IconClose.vue'
-import IconSchedule from '@/components/icons/IconSchedule.vue'
-import BaseLabel from '@/components/BaseLabel.vue'
-import BaseInput from '@/components/BaseInput.vue'
 
 const auctionSvc = new AuctionServices()
 
-const user = JSON.parse(localStorage.getItem('user'))
 let isOpenMenu = ref(true)
-let isOpenModal = ref(false)
 let isLoading = ref(false)
-let pagination = ref({})
-let auctions = reactive([])
+let auctions = ref([])
 
 function openedMenu() {
   isOpenMenu.value = !isOpenMenu.value
 }
 
-const fetchAllAuction = async (page = 1) => {
+const fetchAllAuction = async () => {
   isLoading.value = true
   try {
-    const response = await auctionSvc.index({ page })
+    const response = await auctionSvc.index()
     if (response.status == 200) {
-      pagination.value = response.data.data
-      auctions = response.data.data.data
+      auctions.value = response.data?.data
     } else {
       throw response
     }
@@ -74,10 +61,6 @@ onMounted(async () => {
         <h3 class="title-page">Lelang Berlangsung</h3>
       </div>
       <div class="content-wrapper">
-        <div class="utility-container">
-          <b-search-bar></b-search-bar>
-        </div>
-
         <div class="table-wrapper">
           <b-table>
             <template #tableHead>
@@ -94,10 +77,10 @@ onMounted(async () => {
             </template>
             <template #tableBody>
               <tr v-if="isLoading">
-                <b-table-data colspan="8" class="info">Sedang memuat data...</b-table-data>
+                <td colspan="8" class="info">Sedang memuat data...</td>
               </tr>
-              <tr v-else-if="auctions.length == 0">
-                <b-table-data colspan="8" class="info">Data masih kosong...</b-table-data>
+              <tr v-else-if="auctions.length === 0">
+                <td colspan="8" class="info">Tidak ada lelang berlangsung</td>
               </tr>
 
               <tr v-for="(item, index) in auctions" :key="index" v-else>
@@ -142,12 +125,6 @@ onMounted(async () => {
             </template>
           </b-table>
         </div>
-        <BasePagination
-          v-if="pagination.last_page"
-          :pagination="pagination"
-          @page-changed="fetchAllAuction"
-        >
-        </BasePagination>
       </div>
     </template>
   </BaseLayoutDashboard>
@@ -186,6 +163,7 @@ onMounted(async () => {
 }
 
 .table-wrapper .info {
+padding: 2rem;
   text-align: center !important;
 }
 

@@ -6,6 +6,8 @@ import BSearchBar from '@/components/searchBar/b-search-bar.vue'
 import HomeServices from '@/services/HomeServices.js'
 import { onMounted, onUnmounted, ref } from 'vue'
 
+const user = JSON.parse(localStorage.getItem('user'))
+
 const homeSvc = new HomeServices()
 let auctions = ref([])
 let isLoading = ref(false)
@@ -92,6 +94,7 @@ const categories = [
           <BaseCard v-for="item in auctions" :key="item.id" :auction="item">
             <BaseButton
               @click="$router.push({ name: 'publicAuctionDetails', params: { id: item.id } })"
+              v-if="user.role === masyarakat"
               ><template #btn-content>Detail</template></BaseButton
             >
           </BaseCard>

@@ -13,17 +13,18 @@ import { computed, onMounted, ref } from 'vue'
 import IconDelete from '@/components/icons/IconDelete.vue'
 import IconEdit from '@/components/icons/IconEdit.vue'
 import IconClose from '@/components/icons/IconClose.vue'
+import BaseModal from '@/components/BaseModal.vue'
 
 let isOpenAside = ref(true)
 const officerSvc = new OfficerService()
 let officers = ref([])
 let officerKeyword = ref('')
-let id_petugas = ref(null)
+let petugasId = ref(null)
 let isOpenModal = ref(false)
 
 let isLoading = ref(false)
 
-const officerWanted = computed(() => {
+const officerSearched = computed(() => {
   if (officerKeyword.value)
     return officers.value.filter((officer) => {
       return (
@@ -51,9 +52,28 @@ const fetchOfficers = async () => {
   }
 }
 
-const openedModalDelete = (id_petugas) => {
-  id_petugas.value = id_petugas
-  isOpenModal.value = true
+const destroyOfficer = async (id) => {
+  try {
+    isLoading.value = true
+    const response = await officerSvc.destroy(id)
+
+    if (response.status === 200) {
+      isOpenModal.value = false
+      window.location.reload()
+    } else {
+      throw response
+    }
+  } catch (error) {
+    isLoading.value = false
+    console.error(error?.response)
+  } finally {
+    isLoading.value = false
+  }
+}
+
+const openedModalDelete = (id) => {
+  isOpenModal.value = !isOpenModal.value
+  petugasId.value = id
 }
 
 onMounted(() => {
@@ -80,7 +100,7 @@ onMounted(() => {
       </section>
       <section class="officer-wrapper">
         <div class="row">
-          <BSearchBar v-model="officerKeyword" @handle-search="searchOfficer"></BSearchBar>
+          <BSearchBar v-model="officerKeyword"></BSearchBar>
           <BaseButton class="officer-wrapper__btn" @click="$router.push({ name: 'officerAddForm' })"
             ><template #btn-content>Tambah Petugas</template></BaseButton
           >
@@ -101,10 +121,10 @@ onMounted(() => {
               <tr v-if="isLoading">
                 <td class="officer-wrapper__table-info" colspan="5">Sedang memuat data...</td>
               </tr>
-              <tr v-else-if="officerWanted.length === 0 && !isLoading">
-                <td class="officer-wrapper__table-info" colspan="5">Daftar petugas kosong</td>
+              <tr v-else-if="officerSearched.length === 0 && !isLoading">
+                <td class="officer-wrapper__table-info" colspan="5">Daftar petugas tidak ditemukan</td>
               </tr>
-              <tr v-for="item in officerWanted" :key="item.id_petugas" v-else>
+              <tr v-for="item in officerSearched" :key="item.id_petugas" v-else>
                 <BTableData>{{ item.id_petugas }}</BTableData>
                 <BTableData>{{ item.nama_petugas }}</BTableData>
                 <BTableData>{{ item.username }}</BTableData>
@@ -142,7 +162,7 @@ onMounted(() => {
         </template>
         <template #modalBody>
           <p class="modal-wrapper__description">
-            Apakah anda yakin ingin menghapus asset lelang ini?
+            Apakah anda yakin ingin menghapus petugas ini beserta data datanya?
           </p>
         </template>
         <template #modalFooter>
@@ -153,9 +173,9 @@ onMounted(() => {
             <BaseButton
               class="modal-wrapper__button--secondary"
               :variant="'danger'"
-              :disabled="isLoading ? 'true' : ''"
+              :disabled="isLoading"
               :class="isLoading ? 'btn-disabled' : ''"
-              @click="destroyItem(itemId)"
+              @click="destroyOfficer(petugasId)"
               ><template #btn-content
                 ><p v-if="isLoading">Loading...</p>
                 <p v-else>Hapus</p></template
@@ -179,6 +199,12 @@ onMounted(() => {
   align-items: center;
   margin-block: 0.5rem 1.5rem;
   gap: 0.8rem;
+}
+
+.row--end {
+  display: flex;
+  justify-content: end;
+  gap: 5px;
 }
 
 .officer-wrapper__btn {

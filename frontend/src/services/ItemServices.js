@@ -1,9 +1,8 @@
 import api from "@/lib/httpInterceptors";
 
 export default class ItemServices {
-  async index(params = {}) {
-    // Axios akan otomatis mengubah object params { page: 1 } menjadi URL `/auctions?page=1`
-    const response = await api.get(`/auctions`, { params })
+  async index() {
+    const response = await api.get(`/auctions`)
 
     return response
   }
