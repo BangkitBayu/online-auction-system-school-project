@@ -38,10 +38,8 @@ class storeAuctionRequest extends FormRequest
             'nama_barang' => ['required', 'unique:tb_barang,nama_barang', 'max:25'],
             'tgl' => ['required', 'date'],
             'harga_awal' => ['required', 'integer', 'min:0'],
-            'harga_akhir' => ['required', 'integer', 'min:0'],
-            'tgl_mulai_lelang' => ['required' , 'date'],
-            'tgl_akhir_lelang' => ['required' , 'date' , 'after:tgl_mulai_lelang'],
-            'id_user' => ['required', 'exists:tb_masyarakat,id_user'],
+            'tgl_mulai_lelang' => ['required', 'date'],
+            'tgl_akhir_lelang' => ['required', 'date', 'after:tgl_mulai_lelang'],
             'deskripsi_barang' => ['required', 'max:100'],
             'thumbnail' => ['required', 'image', 'mimes:png,jpg,jpeg,webp', 'max:2048'],
             'id_kategori_barang' => ['required', 'exists:tb_kategori_barang,id_kategori_barang'],
@@ -69,10 +67,6 @@ class storeAuctionRequest extends FormRequest
             'harga_awal.integer' => 'Harga awal invalid',
             'harga_awal.min' => 'Batas awal harga adalah 0',
 
-            'harga_akhir.required' => 'Harga akhir wajib diisi',
-            'harga_akhir.integer' => 'Harga akhir invalid',
-            'harga_akhir.min' => 'Batas awal harga adalah 0',
-
             'deskripsi_barang.required' => 'Deskripsi barang wajib diisi',
             'deskripsi_barang.max' => 'Panjang deskripsi barang maksimal 100 karakter',
 
@@ -83,10 +77,6 @@ class storeAuctionRequest extends FormRequest
 
             'id_kategori_barang.required' => 'Kategori wajib diisi',
             'id_kategori_barang.exists' => 'Kategori tidak ditemukan',
-
-            'id_user.required' => 'Pengguna wajib diisi',
-            'id_user.exists' => 'Pengguna tidak ditemukan',
-
         ];
     }
 

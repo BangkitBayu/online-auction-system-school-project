@@ -11,7 +11,6 @@ class AuctionResourceV1 extends JsonResource
     {
         return [
             'id' => $this->id_lelang,
-            'harga_limit' => (float) $this->harga_limit,
             'periode' => [
                 'mulai' => $this->tgl_mulai_lelang,
                 'selesai' => $this->tgl_akhir_lelang,
