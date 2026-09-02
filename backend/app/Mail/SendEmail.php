@@ -14,12 +14,12 @@ use Illuminate\Queue\SerializesModels;
 class SendEmail extends Mailable
 {
     use Queueable, SerializesModels;
-    public User $data;
+    public array $data;
 
     /**
      * Create a new message instance.
      */
-    public function __construct(User $data)
+    public function __construct(array $data)
     {
         $this->data = $data;
     }
@@ -30,7 +30,7 @@ class SendEmail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Send Email',
+            subject: 'Selamat! Anda adalah pemenang lelang ' . $this->data['detail_lelang']['nama_lot'],
             from: 'lelangmudahofficial@gmail.com'
         );
     }

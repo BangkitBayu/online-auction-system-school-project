@@ -39,20 +39,47 @@ class CheckAuctionStatus extends Command
 
         $this->info('Pengumuman lelang ' . now());
         if ($expired_auctions) {
+            // Ambil Id lelang yang sudah melampaui batas waktu
             $auction_ids = $expired_auctions->pluck('id_lelang');
 
             foreach ($expired_auctions as $auction) {
+                $winning_bid = $auction->winner;
+                $winning_user = $auction->winner?->masyarakats;
+
+                $data = [
+                    'detail_lelang' => [
+                        'id' => $auction->id_lelang,
+                        'nama_lot' => $auction->barang?->nama_barang,
+                        'kategori_lot' => $auction->barang?->kategori_barang?->nama_kategori_barang,
+                        'harga_akhir' => $auction->harga_akhir,
+                        'tgl_mulai' => $auction->tgl_mulai_lelang,
+                        'tgl_selesai' => $auction->tgl_akhir_lelang,
+                    ],
+                    'detail_pemenang' => [
+                        'id' => $winning_user?->id_user,
+                        'username' => $winning_user?->username,
+                        'email' => $winning_user?->email,
+                    ],
+                    'detail_petugas' => [
+                        'id' => $auction->petugas?->id_petugas,
+                        'username' => $auction->petugas?->username,
+                        'nama_petugas' => $auction->petugas?->nama_petugas,
+                        'telp' => $auction->petugas?->telp,
+                    ]
+                ];
+
                 try {
-                    $winner_user = $auction->winner?->masyarakats;
+                    if ($winning_user) {
+                        $this->info('Pengumuman lelang kepada ' . $winning_user->username);
 
-                    if ($winner_user) {
-                        $this->info('Pengumuman lelang kepada ' . $winner_user->username);
-                        Mail::to($winner_user->email)->queue(new SendEmail($winner_user));
+                        Mail::to($winning_user->email)->send(new SendEmail($data));
                     }
-                    $winner_history = $auction->winner;
 
-
-                    Lelang::whereIn('id_lelang', $auction_ids)->update(['status' => 'ditutup', 'harga_akhir' => $winner_history->penawaran_harga, 'id_user' => $winner_history->id_user]);
+                    $auction->update([
+                        'status' => 'ditutup',
+                        'harga_akhir' => $winning_bid?->penawaran_harga,
+                        'id_user' => $winning_bid?->id_user,
+                    ]);
                 } catch (Throwable $error) {
                     $this->info($error->getMessage());
                 }
