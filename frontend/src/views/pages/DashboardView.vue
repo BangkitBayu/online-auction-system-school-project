@@ -111,6 +111,76 @@ const user = JSON.parse(localStorage.getItem('user'))
           </div>
         </div>
       </section>
+      <section v-if="user.role === 'administrator'" class="user-dashboard-wrapper">
+        <div class="row--3">
+          <div class="dashboard-block-summary">
+            <h3>Lelang berlangsung</h3>
+            <h1 v-text="dashboardData.total_lelang_berlangsung"></h1>
+          </div>
+          <div class="dashboard-block-summary">
+            <h3>Lot terjual</h3>
+            <h1 v-text="dashboardData.total_lot_terjual"></h1>
+          </div>
+          <div class="dashboard-block-summary">
+            <h3>Petugas aktif</h3>
+            <h1 v-text="dashboardData.total_petugas_aktif"></h1>
+          </div>
+        </div>
+        <h2 class="text__heading">Aksi Cepat</h2>
+        <div class="dashboard-items">
+          <router-link class="item--horizontal" :to="{ name: 'liveAuctions' }">
+            <div class="item--vertical">
+              <span class="item__label">Lihat Lelang</span>
+              <p class="item__value">Lihat semua lelang yang sedang berlangsung</p>
+            </div>
+          </router-link>
+          <router-link class="item--horizontal" :to="{ name: 'officerAddForm' }">
+            <div class="item--vertical">
+              <span class="item__label">Tambah Petugas</span>
+              <p class="item__value">Tambahkan petugas baru untuk mengelola lelang</p>
+            </div>
+          </router-link>
+          <router-link class="item--horizontal" :to="{ name: 'auctionReports' }">
+            <div class="item--vertical">
+              <span class="item__label">Cetak Laporan Lelang</span>
+              <p class="item__value">Laporan dibuatkan oleh sistem, cetak laporannya</p>
+            </div>
+          </router-link>
+        </div>
+      </section>
+      <section v-if="user.role === 'petugas'" class="user-dashboard-wrapper">
+        <div class="row--2">
+          <div class="dashboard-block-summary">
+            <h3>Lelang berlangsung</h3>
+            <h1 v-text="dashboardData.total_lelang_berlangsung"></h1>
+          </div>
+          <div class="dashboard-block-summary">
+            <h3>Lelang segera berakhir</h3>
+            <h1 v-text="dashboardData.total_lelang_segera_berakhir"></h1>
+          </div>
+        </div>
+        <h2 class="text__heading">Aksi Cepat</h2>
+        <div class="dashboard-items">
+          <router-link class="item--horizontal" :to="{ name: 'liveAuctions' }">
+            <div class="item--vertical">
+              <span class="item__label">Lihat Lelang</span>
+              <p class="item__value">Lihat semua lelang yang sedang berlangsung</p>
+            </div>
+          </router-link>
+          <router-link class="item--horizontal" :to="{ name: 'formAddAsset' }">
+            <div class="item--vertical">
+              <span class="item__label">Tambah Lot Lelang</span>
+              <p class="item__value">Tambahkan lot lelang baru untuk masyarakat</p>
+            </div>
+          </router-link>
+          <router-link class="item--horizontal" :to="{ name: 'auctionReports' }">
+            <div class="item--vertical">
+              <span class="item__label">Cetak Laporan Lelang</span>
+              <p class="item__value">Laporan dibuatkan oleh sistem, cetak laporannya</p>
+            </div>
+          </router-link>
+        </div>
+      </section>
     </template>
   </BaseLayoutDashboard>
 </template>
@@ -132,6 +202,13 @@ header .container {
   display: grid;
   width: 100%;
   grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-block: 1rem;
+}
+.row--2 {
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
   margin-block: 1rem;
 }

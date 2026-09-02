@@ -4,13 +4,22 @@ import BaseLayout from '../templates/BaseLayout.vue'
 import BaseCard from '@/components/BaseCard.vue'
 import BSearchBar from '@/components/searchBar/b-search-bar.vue'
 import HomeServices from '@/services/HomeServices.js'
-import { onMounted, onUnmounted, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 
 const user = JSON.parse(localStorage.getItem('user'))
 
 const homeSvc = new HomeServices()
 let auctions = ref([])
 let isLoading = ref(false)
+let auctionKeyword = ref('')
+
+const auctionSearched = computed(() => {
+  if (auctionKeyword.value)
+    return auctions.value.filter((auction) => {
+      return auction.barang?.nama.toLowerCase().includes(auctionKeyword.value.toLowerCase())
+    })
+  return auctions.value
+})
 
 let timer = ref(null)
 
@@ -43,66 +52,25 @@ onMounted(async () => {
 onUnmounted(() => {
   if (timer.value) clearInterval(timer.value)
 })
-
-const categories = [
-  {
-    name: 'Kendaraan',
-    endpoint: 'url',
-  },
-  {
-    name: 'Alat berat',
-    endpoint: 'url',
-  },
-  {
-    name: 'Elektronik & Inventaris',
-    endpoint: 'url',
-  },
-  {
-    name: 'Komoditas',
-    endpoint: 'url',
-  },
-  {
-    name: 'Tanah',
-    endpoint: 'url',
-  },
-  {
-    name: 'Bangunan',
-    endpoint: 'url',
-  },
-  {
-    name: 'Kapal',
-    endpoint: 'url',
-  },
-]
 </script>
 
 <template>
   <BaseLayout>
     <template #main>
       <section id="main-content-container">
-        <form>
-          <b-search-bar></b-search-bar>
-        </form>
-        <h3>Kategori Lot Lelang</h3>
-        <div class="category-wrapper">
-          <router-link class="nav-link" v-for="(category, index) in categories" :key="index">
-            {{ category.name }}
-          </router-link>
+        <div class="row">
+          <BSearchBar v-model="auctionKeyword"></BSearchBar>
         </div>
         <h3>Lihat Asset yang Sedang di Lelang</h3>
         <div class="product-wrapper">
-          <BaseCard v-for="item in auctions" :key="item.id" :auction="item">
+          <BaseCard v-for="item in auctionSearched" :key="item.id" :auction="item">
             <BaseButton
               @click="$router.push({ name: 'publicAuctionDetails', params: { id: item.id } })"
-              v-if="user.role === masyarakat"
+              v-if="user.role === 'masyarakat'"
               ><template #btn-content>Detail</template></BaseButton
             >
           </BaseCard>
         </div>
-
-        <BaseButton id="nav-detail-btn" :variant="'primary-bordered'"
-          ><template #btn-content> <p>Lihat Semua</p> </template></BaseButton
-        >
       </section>
     </template>
   </BaseLayout>
@@ -123,7 +91,7 @@ section {
   margin-top: 5rem;
 }
 
-form {
+.row {
   display: flex;
   justify-content: space-between;
   align-items: center;

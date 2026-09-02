@@ -38,7 +38,6 @@ const moveToRegister = () => {
       <nav :style="isOpen == true ? 'display:flex;' : ''">
         <ul>
           <li><router-link class="nav-link" :to="{ name: 'home' }">Beranda</router-link></li>
-          <li><router-link class="nav-link" to="">Katalog</router-link></li>
         </ul>
         <div class="container" v-if="!isLoggedUser">
           <BaseButton id="btn-login" :variant="'primary-bordered'" @click="moveToLogin">
