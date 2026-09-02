@@ -25,7 +25,6 @@ class updateAuctionRequest extends FormRequest
     {
         $this->merge([
             'harga_awal' => (int) $this->harga_awal,
-            'harga_akhir' => (int) $this->harga_akhir,
         ]);
     }
 

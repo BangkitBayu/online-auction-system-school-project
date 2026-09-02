@@ -63,5 +63,39 @@ class DashboardController extends Controller
                 'lelang_segera_berakhir' => AuctionEndingSoonResource::collection($auctions_ending_soon)
             ]], 200);
         }
+
+        $auction_in_progress_count = DB::table('tb_lelang as lelang')
+            ->where('lelang.status', '=', 'dibuka')
+            ->count();
+        $auction_sold_count = DB::table('tb_lelang as lelang')
+            ->where('lelang.status', '=', 'ditutup')
+            ->whereNotNull('lelang.id_user')
+            ->count();
+
+        if ($logged_user->id_level === 1) {
+            $officer_active_count = DB::table('tb_petugas as petugas')
+                ->where('id_level', '=', 2)
+                ->count();
+
+            return response()->json(['message' => 'Successfully retrieved user data', 'data' => [
+                'total_lelang_berlangsung' => $auction_in_progress_count,
+                'total_lot_terjual' => $auction_sold_count,
+                'total_petugas_aktif' => $officer_active_count
+            ]]);
+        }
+
+        $today = now()->startOfDay();
+        $three_day_again = now()->addDays(3)->endOfDay();
+
+        $auction_ending_soon_count = DB::table('tb_lelang as lelang')
+            ->where('lelang.status', '=', 'dibuka')
+            ->whereBetween('lelang.tgl_akhir_lelang', [$today, $three_day_again])
+            ->count();
+
+        return response()->json(['message' => 'Successfully retrieved user data', 'data' => [
+            'total_lelang_berlangsung' => $auction_in_progress_count,
+            'total_lot_terjual' => $auction_sold_count,
+            'total_lelang_segera_berakhir' => $auction_ending_soon_count
+        ]]);
     }
 }

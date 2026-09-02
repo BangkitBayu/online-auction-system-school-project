@@ -21,7 +21,7 @@ class ItemController extends Controller
      */
     public function index(): JsonResponse
     {
-        $auctions = Barang::select(['id_barang', 'nama_barang', 'tgl', 'harga_awal', 'id_kategori_barang'])->with('kategori_barang:id_kategori_barang,nama_kategori_barang')->paginate(5);
+        $auctions = Barang::select(['id_barang', 'nama_barang', 'tgl', 'harga_awal', 'id_kategori_barang'])->with('kategori_barang:id_kategori_barang,nama_kategori_barang')->get();
         return response()->json(['message' => 'Successfully retrieved auctions data', 'data' => $auctions], 200);
     }
 
@@ -153,8 +153,7 @@ class ItemController extends Controller
             // 4. Update data tabel Lelang (Relasi)
             if ($barang->lelang) {
                 $barang->lelang->update([
-                    'id_user'          => $payload['id_user'] ?? $barang->lelang->id_user,
-                    'harga_akhir'      => $payload['harga_akhir'] ?? $barang->lelang->harga_akhir,
+                    'id_petugas' => $request->user()->id_petugas,
                     'tgl_mulai_lelang' => $payload['tgl_mulai_lelang'],
                     'tgl_akhir_lelang' => $payload['tgl_akhir_lelang'],
                     'status' => $payload['tgl_akhir_lelang'] <= now() ? 'ditutup' : 'dibuka'
