@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id('id_history');
 
             $table->foreignId('id_lelang')->constrained('tb_lelang' , 'id_lelang')->cascadeOnUpdate();
-            $table->foreignId('id_barang')->constrained('tb_barang' , 'id_barang')->cascadeOnUpdate();
-            $table->foreignId('id_user')->constrained('tb_masyarakat' , 'id_user')->cascadeOnUpdate();
+            $table->foreignId('id_barang')->constrained('tb_barang' , 'id_barang')->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreignId('id_user')->nullable()->constrained('tb_masyarakat' , 'id_user')->cascadeOnUpdate()->nullOnDelete();
 
             $table->integer('penawaran_harga');
 
