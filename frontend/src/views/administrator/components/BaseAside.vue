@@ -6,6 +6,17 @@ import bDropdown from '@/components/dropdown/b-dropdown.vue'
 import bDropdownItem from '@/components/dropdown/b-dropdown-item.vue'
 import { useRoute } from 'vue-router'
 
+import BaseAlert from '@/components/BaseAlert.vue'
+import { ref } from 'vue'
+
+let showAlert = ref(false)
+let alertMessage = ref('')
+let alertType = ref('')
+
+const closeAlert = () => {
+  showAlert.value = false
+}
+
 const route = useRoute()
 
 const user = JSON.parse(localStorage.getItem('user'))
@@ -26,14 +37,25 @@ const props = defineProps({
 const handleLogout = async () => {
   const user = JSON.parse(localStorage.getItem('user'))
 
+  showAlert.value = true
+  alertMessage.value = 'Sedang logout, silahkan tunggu sebentar...'
+  alertType.value = 'info'
+  setTimeout(() => {
+    showAlert.value = false
+  }, 5000)
   try {
     const response = authSvc.logout(user.username, user.role)
-
     if (response.status === 200) {
       localStorage.removeItem('token')
       localStorage.removeItem('user')
     }
   } catch (error) {
+    showAlert.value = true
+    alertMessage.value = 'Gagal logout, silahkan coba lagi!'
+    alertType.value = 'error'
+    setTimeout(() => {
+      showAlert.value = false
+    }, 5000)
     console.error(error)
   }
 }
@@ -41,6 +63,9 @@ const handleLogout = async () => {
 
 <template>
   <div class="aside-wrapper" :class="props.isOpen ? 'aside-active' : 'aside-nonactive'">
+    <!-- Alert component -->
+    <BaseAlert :is-show="showAlert" :message="alertMessage" :type="alertType" @close="closeAlert">
+    </BaseAlert>
     <BaseLogo :variants="'secondary'"></BaseLogo>
     <section class="container" id="first-menu">
       <ul class="nav-container">

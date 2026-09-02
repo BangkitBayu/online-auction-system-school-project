@@ -11,6 +11,15 @@ import dateIsoFormater from '@/utils/dateIsoFormater'
 import moneyFormater from '@/utils/moneyFormater'
 import { onMounted, reactive, ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import BaseAlert from '@/components/BaseAlert.vue'
+
+let showAlert = ref(false)
+let alertMessage = ref('')
+let alertType = ref('')
+
+const closeAlert = () => {
+  showAlert.value = false
+}
 
 const homeSvc = new HomeServices()
 let auctionDetails = ref({})
@@ -28,7 +37,6 @@ const openedModalBid = async () => {
   if (localStorage.getItem('user')) {
     isOpenModal.value = true
   } else {
-    alert('Anda belum login, login terlebih dahulu!')
     router.push({ name: 'login' })
   }
 }
@@ -62,11 +70,20 @@ const joinBid = async () => {
     const response = await auctionSvc.joinBid(idLelang, idBarang, penawaran_harga)
 
     if (response.status === 201) {
-      window.location.reload()
+      formBidding.penawaran_harga = ''
+      isOpenModal.value = false
+      showAlert.value = true
+      alertMessage.value = 'Berhasil melakukan penawaran, cek didashboard anda!'
+      alertType.value = 'success'
+      setTimeout(() => {
+        showAlert.value = false
+      }, 5000)
     } else {
       throw response
     }
   } catch (error) {
+    formBidding.penawaran_harga = ''
+    isOpenModal.value = false
     isLoading.value = false
     isError.value = true
     if (error.response?.status === 422) {
@@ -74,9 +91,10 @@ const joinBid = async () => {
       isOpenModal.value = true
     }
   } finally {
+    formBidding.penawaran_harga = ''
     isLoading.value = false
     isError.value = false
-    isOpenModal.value = true
+    isOpenModal.value = false
   }
 }
 
@@ -89,6 +107,9 @@ onMounted(async () => {
   <div class="auction-wrapper">
     <BaseHeader></BaseHeader>
     <main class="auction-wrapper__main">
+      <!-- Alert component -->
+      <BaseAlert :is-show="showAlert" :message="alertMessage" :type="alertType" @close="closeAlert">
+      </BaseAlert>
       <div class="auction-content">
         <img
           :src="auctionDetails.barang?.thumbnail_url"
@@ -147,7 +168,11 @@ onMounted(async () => {
               <p class="modal-wrapper__description">
                 Hanya tuliskan nominalnya saja tanpa dipisahkan titik, contohnya 1000000
               </p>
-              <p class="error" v-if="setErrors.penawaran_harga" v-text="setErrors.penawaran_harga[0]"></p>
+              <p
+                class="error"
+                v-if="setErrors.penawaran_harga"
+                v-text="setErrors.penawaran_harga[0]"
+              ></p>
             </div>
           </form>
         </section>

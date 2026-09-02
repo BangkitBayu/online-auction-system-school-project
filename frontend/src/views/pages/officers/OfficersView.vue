@@ -14,6 +14,15 @@ import IconDelete from '@/components/icons/IconDelete.vue'
 import IconEdit from '@/components/icons/IconEdit.vue'
 import IconClose from '@/components/icons/IconClose.vue'
 import BaseModal from '@/components/BaseModal.vue'
+import BaseAlert from '@/components/BaseAlert.vue'
+
+let showAlert = ref(false)
+let alertMessage = ref('')
+let alertType = ref('')
+
+const closeAlert = () => {
+  showAlert.value = false
+}
 
 let isOpenAside = ref(true)
 const officerSvc = new OfficerService()
@@ -58,13 +67,20 @@ const destroyOfficer = async (id) => {
     const response = await officerSvc.destroy(id)
 
     if (response.status === 200) {
+      await fetchOfficers()
       isOpenModal.value = false
-      window.location.reload()
+      showAlert.value = true
+      alertMessage.value = 'Data petugas berhasil dihapus!'
+      alertType.value = 'success'
     } else {
       throw response
     }
   } catch (error) {
     isLoading.value = false
+    showAlert.value = true
+    alertMessage.value = 'Terjadi kesalahan saat menghapus data!'
+    alertType.value = 'error'
+    isOpenModal.value = false
     console.error(error?.response)
   } finally {
     isLoading.value = false
@@ -92,6 +108,9 @@ onMounted(() => {
       <BaseAside :is-open="isOpenAside"></BaseAside>
     </template>
     <template #main>
+      <!-- Alert component -->
+      <BaseAlert :is-show="showAlert" :message="alertMessage" :type="alertType" @close="closeAlert">
+      </BaseAlert>
       <section class="row">
         <h1 class="heading">Kelola Petugas</h1>
         <router-link class="nav-link" :to="{ name: 'dashboardView' }">
@@ -122,7 +141,9 @@ onMounted(() => {
                 <td class="officer-wrapper__table-info" colspan="5">Sedang memuat data...</td>
               </tr>
               <tr v-else-if="officerSearched.length === 0 && !isLoading">
-                <td class="officer-wrapper__table-info" colspan="5">Daftar petugas tidak ditemukan</td>
+                <td class="officer-wrapper__table-info" colspan="5">
+                  Daftar petugas tidak ditemukan
+                </td>
               </tr>
               <tr v-for="item in officerSearched" :key="item.id_petugas" v-else>
                 <BTableData>{{ item.id_petugas }}</BTableData>

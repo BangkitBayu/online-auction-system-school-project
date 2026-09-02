@@ -6,17 +6,24 @@ import HamburgerToggle from '@/components/HamburgerToggle.vue'
 import UserProfile from '@/components/UserProfile.vue'
 import BaseAside from '@/views/administrator/components/BaseAside.vue'
 import BaseLayoutDashboard from '@/views/templates/BaseLayoutDashboard.vue'
-import { onMounted, reactive, ref } from 'vue'
+import { reactive, ref } from 'vue'
 import BaseButton from '@/components/BaseButton.vue'
-import { useRouter } from 'vue-router'
 import IconEyeOff from '@/components/icons/IconEyeOff.vue'
 import IconEyeOn from '@/components/icons/IconEyeOn.vue'
 import OfficerService from '@/services/OfficerService'
+import BaseAlert from '@/components/BaseAlert.vue'
+
+let showAlert = ref(false)
+let alertMessage = ref('')
+let alertType = ref('')
+
+const closeAlert = () => {
+  showAlert.value = false
+}
 
 const officerSvc = new OfficerService()
 let isOpenMenu = ref(true)
 let isLoading = ref(false)
-const router = useRouter()
 let setErrors = ref([])
 
 let isShowPassword = ref(false)
@@ -45,7 +52,11 @@ const submitData = async () => {
     )
 
     if (response.status === 201) {
-      alert(response.data?.message)
+      alertMessage.value = 'Petugas berhasil ditambahkan!'
+      alertType.value = 'success'
+      setTimeout(() => {
+        showAlert.value = false
+      }, 5000)
     } else {
       throw response
     }
@@ -54,6 +65,12 @@ const submitData = async () => {
     if (error.response?.status === 422) {
       setErrors.value = error.response.data?.errors
       console.error(error)
+      showAlert.value = true
+      alertMessage.value = 'Terjadi kesalahan, silahkan periksa kembali data anda!'
+      alertType.value = 'error'
+      setTimeout(() => {
+        showAlert.value = false
+      }, 5000)
     }
     console.error(error)
   } finally {
@@ -74,6 +91,9 @@ const submitData = async () => {
       <BaseAside :is-open="isOpenMenu"></BaseAside>
     </template>
     <template #main>
+      <!-- Alert component -->
+      <BaseAlert :is-show="showAlert" :message="alertMessage" :type="alertType" @close="closeAlert">
+      </BaseAlert>
       <section class="row">
         <h2 class="text__heading">Tambah Petugas</h2>
         <router-link :to="{ name: 'officers' }" class="nav-link" style="margin-top: 0px !important"

@@ -1,23 +1,31 @@
 <script setup lang="js">
 import BaseButton from '@/components/BaseButton.vue'
 import HamburgerToggle from '@/components/HamburgerToggle.vue'
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import DashboardHeader from '@/components/DashboardHeader.vue'
 import UserProfile from '@/components/UserProfile.vue'
 import BaseLayoutDashboard from '@/views/templates/BaseLayoutDashboard.vue'
-import ItemServices from '@/services/ItemServices.js'
 import BaseAside from '@/views/administrator/components/BaseAside.vue'
 import bSearchBar from '@/components/searchBar/b-search-bar.vue'
 import BTable from '@/components/table/b-table.vue'
 import bTableHead from '@/components/table/b-table-head.vue'
 import bTableData from '@/components/table/b-table-data.vue'
-import BasePagination from '@/components/BasePagination.vue'
 import IconDetail from '@/components/icons/IconDetail.vue'
 import IconEdit from '@/components/icons/IconEdit.vue'
 import IconDelete from '@/components/icons/IconDelete.vue'
 import dateIsoFormater from '@/utils/dateIsoFormater'
 import BaseModal from '@/components/BaseModal.vue'
 import IconClose from '@/components/icons/IconClose.vue'
+import ItemServices from '@/services/ItemServices.js'
+import BaseAlert from '@/components/BaseAlert.vue'
+
+let showAlert = ref(false)
+let alertMessage = ref('')
+let alertType = ref('')
+
+const closeAlert = () => {
+  showAlert.value = false
+}
 
 const user = JSON.parse(localStorage.getItem('user'))
 
@@ -76,12 +84,19 @@ const destroyItem = async (id) => {
 
     if (response?.status === 200) {
       isOpenModal.value = false
-      window.location.reload()
+      await getAllAuction() // Refresh data setelah penghapusan
+      showAlert.value = true
+      alertMessage.value = 'Data lelang berhasil dihapus!'
+      alertType.value = 'success'
     } else {
       throw response
     }
   } catch (error) {
     isLoading.value = false
+    showAlert.value = true
+    alertMessage.value = 'Terjadi kesalahan saat menghapus data!'
+    alertType.value = 'error'
+    isOpenModal.value = false
     console.error(error?.response)
   } finally {
     isLoading.value = false
@@ -105,6 +120,9 @@ onMounted(async () => {
       </DashboardHeader>
     </template>
     <template #main>
+      <!-- Alert component -->
+      <BaseAlert :is-show="showAlert" :message="alertMessage" :type="alertType" @close="closeAlert">
+      </BaseAlert>
       <h3 class="title-page">Asset Lelang</h3>
       <div class="content-wrapper">
         <div class="top-content-container">
@@ -201,7 +219,7 @@ onMounted(async () => {
             <BaseButton
               class="modal-wrapper__button--secondary"
               :variant="'danger'"
-              :disabled="isLoading ? 'true' : ''"
+              :disabled="isLoading"
               :class="isLoading ? 'btn-disabled' : ''"
               @click="destroyItem(itemId)"
               ><template #btn-content

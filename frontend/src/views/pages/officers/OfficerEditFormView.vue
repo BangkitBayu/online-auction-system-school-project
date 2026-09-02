@@ -13,6 +13,16 @@ import IconEyeOn from '@/components/icons/IconEyeOn.vue'
 import OfficerService from '@/services/OfficerService'
 import { useRoute } from 'vue-router'
 
+import BaseAlert from '@/components/BaseAlert.vue'
+
+let showAlert = ref(false)
+let alertMessage = ref('')
+let alertType = ref('')
+
+const closeAlert = () => {
+  showAlert.value = false
+}
+
 const officerSvc = new OfficerService()
 let isOpenMenu = ref(true)
 let isLoading = ref(false)
@@ -58,17 +68,18 @@ const getOfficerById = async (id) => {
 }
 
 const submitData = async () => {
-
   try {
     isLoading.value = true
 
-    const response = await officerSvc.update(
-      formData,
-      route.params.id,
-    )
+    const response = await officerSvc.update(formData, route.params.id)
 
     if (response.status === 200) {
-      alert(response.data?.message)
+      showAlert.value = true
+      alertMessage.value = 'Petugas berhasil diupdate!'
+      alertType.value = 'success'
+      setTimeout(() => {
+        showAlert.value = false
+      }, 5000)
     } else {
       throw response
     }
@@ -77,8 +88,22 @@ const submitData = async () => {
     if (error.response?.status === 422) {
       setErrors.value = error.response.data?.errors
       console.error(error)
+
+      showAlert.value = true
+      alertMessage.value = 'Terjadi kesalahan, silahkan periksa kembali data anda!'
+      alertType.value = 'error'
+      setTimeout(() => {
+        showAlert.value = false
+      }, 5000)
+    } else {
+      showAlert.value = true
+      alertMessage.value = 'Server error'
+      alertType.value = 'error'
+      setTimeout(() => {
+        showAlert.value = false
+        console.error(error)
+      }, 5000)
     }
-    console.error(error)
   } finally {
     isLoading.value = false
   }
@@ -101,6 +126,9 @@ onMounted(async () => {
       <BaseAside :is-open="isOpenMenu"></BaseAside>
     </template>
     <template #main>
+      <!-- Alert component -->
+      <BaseAlert :is-show="showAlert" :message="alertMessage" :type="alertType" @close="closeAlert">
+      </BaseAlert>
       <section class="row">
         <h2 class="text__heading">Edit Petugas</h2>
         <router-link :to="{ name: 'officers' }" class="nav-link" style="margin-top: 0px !important"

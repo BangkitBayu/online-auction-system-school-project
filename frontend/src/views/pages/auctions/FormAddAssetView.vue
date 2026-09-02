@@ -12,8 +12,16 @@ import BaseSelect from '@/components/BaseSelect.vue'
 import CategoryAuctionService from '@/services/CategoryAuctionServices'
 import BaseButton from '@/components/BaseButton.vue'
 import ItemServices from '@/services/ItemServices'
-import { useRouter } from 'vue-router'
 import BTab from '@/components/tab/b-tab.vue'
+import BaseAlert from '@/components/BaseAlert.vue'
+
+let showAlert = ref(false)
+let alertMessage = ref('')
+let alertType = ref('')
+
+const closeAlert = () => {
+  showAlert.value = false
+}
 
 const tabs = [
   {
@@ -29,11 +37,9 @@ const tabs = [
 const categoryAuctionSvc = new CategoryAuctionService()
 const itemSvc = new ItemServices()
 let categoriesAuction = ref([])
-let users = ref([])
 
 let isOpenMenu = ref(true)
 let isLoading = ref(false)
-const router = useRouter()
 let setErrors = ref([])
 
 let thumbnailUploaded = ref(null)
@@ -97,18 +103,36 @@ const submitData = async () => {
     isLoading.value = true
     const response = await itemSvc.store(payload)
     if (response.status === 200 || response.status === 201) {
-      router.push({ name: 'assetAuctions' })
+      showAlert.value = true
+      alertMessage.value = 'Lelang berhasil ditambahkan!'
+      alertType.value = 'success'
+      setTimeout(() => {
+        showAlert.value = false
+      }, 5000)
     } else {
       throw response
     }
   } catch (error) {
     isLoading.value = false
 
-    if (error.response?.status === 422) {
+    if (error.response.status === 422) {
       setErrors.value = error.response.data.errors || error.response.data
+      showAlert.value = true
+      alertMessage.value = 'Terjadi kesalahan, silahkan periksa kembali data anda!'
+      alertType.value = 'error'
+      setTimeout(() => {
+        showAlert.value = false
+      }, 5000)
+    } else {
+      showAlert.value = true
+      alertMessage.value = 'Server error'
+      alertType.value = 'error'
+      setTimeout(() => {
+        showAlert.value = false
+      }, 5000)
+
+      console.error(error)
     }
-    console.log(setErrors.value)
-    console.error(error)
   } finally {
     isLoading.value = false
   }
@@ -131,6 +155,9 @@ onMounted(async () => {
       <BaseAside :is-open="isOpenMenu"></BaseAside>
     </template>
     <template #main>
+      <!-- Alert component -->
+      <BaseAlert :is-show="showAlert" :message="alertMessage" :type="alertType" @close="closeAlert">
+      </BaseAlert>
       <section class="row">
         <h2 class="text__heading">Tambah Asset</h2>
         <router-link
@@ -307,8 +334,8 @@ onMounted(async () => {
   justify-content: start;
   align-items: start;
   flex-direction: column;
-  min-height: 100vh;
   width: 100%;
+  height: fit-content;
   border-radius: 1rem;
   padding: 1rem;
   gap: 1rem;

@@ -15,6 +15,12 @@ import ItemServices from '@/services/ItemServices'
 import { useRouter, useRoute } from 'vue-router'
 import BTab from '@/components/tab/b-tab.vue'
 
+import BaseAlert from '@/components/BaseAlert.vue'
+
+let showAlert = ref(false)
+let alertMessage = ref('')
+let alertType = ref('')
+
 const categoryAuctionSvc = new CategoryAuctionService()
 const itemSvc = new ItemServices()
 const router = useRouter()
@@ -114,11 +120,23 @@ const submitData = async () => {
     isLoading.value = true
     const response = await itemSvc.edit(id, payload)
     if (response.status === 200 || response.status === 201) {
-      router.push({ name: 'assetAuctions' })
+      showAlert.value = true
+      alertMessage.value = 'Data lelang berhasil diupdate!'
+      alertType.value = 'success'
+      setTimeout(() => {
+        showAlert.value = false
+      }, 5000)
     }
   } catch (error) {
     if (error.response?.status === 422) {
       setErrors.value = error.response.data.errors || {}
+      showAlert.value = true
+      alertMessage.value = 'Terjadi kesalahan, silahkan periksa kembali data anda!'
+      alertType.value = 'error'
+      setErrors.value = error.response.data.errors || error.response.data
+      setTimeout(() => {
+        showAlert.value = false
+      }, 5000)
     }
     console.error(error)
   } finally {
@@ -146,6 +164,9 @@ onMounted(() => {
       <BaseAside :is-open="isOpenMenu"></BaseAside>
     </template>
     <template #main>
+      <!-- Alert component -->
+      <BaseAlert :is-show="showAlert" :message="alertMessage" :type="alertType" @close="closeAlert">
+      </BaseAlert>
       <section class="row">
         <h2 class="text__heading">Perbarui Data Asset</h2>
         <router-link
@@ -190,7 +211,11 @@ onMounted(() => {
                     :type="'text'"
                     v-model="formData.nama_barang"
                   ></BaseInput>
-                  <p class="error" v-if="setErrors.nama_barang" v-text="setErrors.nama_barang?.[0]"></p>
+                  <p
+                    class="error"
+                    v-if="setErrors.nama_barang"
+                    v-text="setErrors.nama_barang?.[0]"
+                  ></p>
                 </div>
 
                 <div class="form-wrapper__form-group">
@@ -203,7 +228,11 @@ onMounted(() => {
                   <p class="form-wrapper__description">
                     Hanya tuliskan nominalnya saja tanpa dipisahkan titik, contohnya 1000000
                   </p>
-                  <p class="error" v-if="setErrors.harga_awal" v-text="setErrors.harga_awal?.[0]"></p>
+                  <p
+                    class="error"
+                    v-if="setErrors.harga_awal"
+                    v-text="setErrors.harga_awal?.[0]"
+                  ></p>
                 </div>
                 <div class="form-wrapper__form-group">
                   <BaseLabel :for="'tanggal-input'" :value="'Tanggal'"></BaseLabel>
@@ -216,7 +245,10 @@ onMounted(() => {
                 </div>
 
                 <div class="form-wrapper__form-group">
-                  <BaseLabel :for="'deskripsi-barang-input'" :value="'Deskripsi Barang'"></BaseLabel>
+                  <BaseLabel
+                    :for="'deskripsi-barang-input'"
+                    :value="'Deskripsi Barang'"
+                  ></BaseLabel>
                   <BaseTextarea
                     id="deskripsi-barang-input"
                     :row="'3'"
@@ -301,7 +333,7 @@ onMounted(() => {
         </BTab>
 
         <!-- Button ditaruh di luar tab agar selalu terlihat -->
-        <div style="margin-top: 1rem;">
+        <div style="margin-top: 1rem">
           <BaseButton
             class="form-wrapper_btn"
             :disabled="isLoading"
