@@ -88,7 +88,7 @@ const handleLogout = async () => {
         ></b-dropdown-item>
         <b-dropdown-item
           :target="'auctionsHistory'"
-          :value="'Riwayat lelang'"
+          :value="'Riwayat penawaran saya'"
           v-if="user.role === 'masyarakat'"
         ></b-dropdown-item>
       </template>

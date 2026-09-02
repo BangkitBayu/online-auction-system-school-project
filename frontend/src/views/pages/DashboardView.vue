@@ -6,6 +6,7 @@ import DashboardHeader from '@/components/DashboardHeader.vue'
 import UserProfile from '@/components/UserProfile.vue'
 import BaseAside from '../administrator/components/BaseAside.vue'
 import DashboardServices from '@/services/DashboardServices.js'
+import moneyFormater from '@/utils/moneyFormater.js'
 
 let isOpenMenu = ref(true)
 const dashboardSvc = new DashboardServices()
@@ -85,7 +86,7 @@ const user = JSON.parse(localStorage.getItem('user'))
             <h1 v-text="dashboardData.total_menang"></h1>
           </div>
         </div>
-        <h2 class="text__heading">Segera Berakhir</h2>
+        <h2 class="text__heading">Penawaran terbaru saya</h2>
         <div class="dashboard-items">
           <div class="empty-state" v-if="dashboardData.lelang_segera_berakhir?.length === 0">
             <p>Anda belum mengikuti lelang</p>
@@ -105,7 +106,10 @@ const user = JSON.parse(localStorage.getItem('user'))
               loading="lazy"
             />
             <div class="item--vertical">
-              <span class="item__label" v-text="item.nama_lot"></span>
+              <div class="col">
+                <span class="item__label" v-text="item.nama_lot"></span>
+                <span class="item__value">Penawaran harga saya: {{ moneyFormater(item.penawaran_harga_saya) }}</span>
+              </div>
               <p class="item__value">{{ estimateTime(item.tgl_selesai) }}</p>
             </div>
           </div>
@@ -196,6 +200,12 @@ header .container {
 
 .text__heading {
   color: var(--text-heading-color);
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .row--3 {

@@ -99,7 +99,7 @@ onMounted(async () => {
     </template>
     <template #main>
       <div class="row">
-        <h1 class="heading">Riwayat Lelang</h1>
+        <h1 class="heading">Riwayat Penawaran Saya</h1>
       </div>
       <div class="auction-history-wrapper">
         <div class="row--no-margin">
