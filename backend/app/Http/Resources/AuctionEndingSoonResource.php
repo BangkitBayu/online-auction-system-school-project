@@ -18,6 +18,7 @@ class AuctionEndingSoonResource extends JsonResource
             'id_lelang' => $this->id_lelang,
             'thumbnail_url' => asset('storage/' . $this->thumbnail_url),
             'nama_lot' => $this->nama_lot,
+            'penawaran_harga_saya' => $this->penawaran_harga_saya,
             'tgl_selesai' => $this->tgl_selesai
         ];
     }

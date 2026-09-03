@@ -224,16 +224,8 @@ class ItemController extends Controller
     {
         $user_id = $request->user()->id_user;
 
-        $latest_history_ids =  DB::table('history_lelang')
-            ->selectRaw('MAX(id_history) as id_history')
-            ->where('id_user', $user_id)
-            ->groupBy('id_lelang');
-
         $auctions_histories = DB::table('history_lelang as history')
             ->where('history.id_user',  '=', $user_id)
-            ->joinSub($latest_history_ids, 'latest', function ($join) {
-                $join->on('history.id_history', '=', 'latest.id_history');
-            })
             ->join('tb_lelang as lelang', 'lelang.id_lelang', '=', 'history.id_lelang')
             ->join('tb_barang as barang', 'barang.id_barang', '=', 'lelang.id_barang')
             ->latest('history.created_at')

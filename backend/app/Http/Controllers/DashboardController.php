@@ -38,6 +38,7 @@ class DashboardController extends Controller
                 ->orderByDesc('history.penawaran_harga')
                 ->count();
 
+
             $auctions_ending_soon = DB::table('tb_lelang as lelang')
                 ->where('lelang.status', '=', 'dibuka')
                 ->leftJoin('history_lelang as history', 'history.id_lelang', '=', 'lelang.id_lelang')
@@ -49,7 +50,8 @@ class DashboardController extends Controller
                         'lelang.id_lelang',
                         'barang.nama_barang as nama_lot',
                         'barang.thumbnail as thumbnail_url',
-                        'lelang.tgl_akhir_lelang as tgl_selesai'
+                        'lelang.tgl_akhir_lelang as tgl_selesai',
+                        'history.penawaran_harga as penawaran_harga_saya'
                     ]
                 )
                 ->limit(5)
