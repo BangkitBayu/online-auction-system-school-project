@@ -37,5 +37,21 @@ dan automasi untuk mempercepat flow operasional lelang.
 | Tools    | VSCode, Git & Github, Xampp |
 | Library Tambahan |  Laravel DOMPdf (cetak laporan) |
 
+## Arsitektur Sistem
+ 
+Project ini menggunakan pola arsitektur **MVC (Model-View-Controller)** sederhana:
+ 
+```
+[ User Browser ]
+        |
+        v
+[ View (Vue js, CSS) ]
+        |
+        v
+[ Controller (Laravel) ] <--> [ Model (Query Database) ]
+        |
+        v
+[ Database MySQL ]
+```
 
 
