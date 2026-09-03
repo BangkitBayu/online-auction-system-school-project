@@ -66,7 +66,7 @@ onUnmounted(() => {
           <BaseCard v-for="item in auctionSearched" :key="item.id" :auction="item">
             <BaseButton
               @click="$router.push({ name: 'publicAuctionDetails', params: { id: item.id } })"
-              v-if="user.role === 'masyarakat'"
+              v-if="!user || user?.role === 'masyarakat'"
               ><template #btn-content>Detail</template></BaseButton
             >
           </BaseCard>
