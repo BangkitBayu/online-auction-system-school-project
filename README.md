@@ -1,5 +1,5 @@
 # LelangMudah - Sistem Lelang Online
-[!home](./documentation/img/home.png)
+![home](./documentation/img/home.png)
 
 > Website sistem lelang online yang memudahkan proses penawaran, pendataan, pemantauan, hingga laporan
 
