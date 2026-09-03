@@ -7,6 +7,7 @@ import BaseInput from '@/components/BaseInput.vue'
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import AuthService from '@/services/AuthService'
+import BaseLayout from '../templates/BaseLayout.vue'
 
 const authSvc = new AuthService()
 const router = useRouter()
@@ -85,118 +86,127 @@ const submitData = async () => {
 </script>
 
 <template>
-  <div class="register-page">
-    <h1>Buat Akun Baru</h1>
-    <p>Selamat Datang di LelangMudah</p>
+  <BaseLayout>
+    <template #main>
+      <div class="register-page">
+        <h1>Buat Akun Baru</h1>
+        <p>Selamat Datang di LelangMudah</p>
 
-    <form @submit.prevent="submitData">
-      <div class="form-group">
-        <label style="font-weight: 600">Daftar sebagai</label>
-        <div class="roles-container">
-          <button
-            type="button"
-            v-for="(role, index) in roles"
-            :key="index"
-            @click="clickedRole(index)"
-            :class="index === selectedRoleId ? 'role-selected' : 'role-btn'"
-          >
-            <p>{{ role.title }}</p>
-          </button>
-        </div>
-      </div>
+        <form @submit.prevent="submitData">
+          <div class="form-group">
+            <label style="font-weight: 600">Daftar sebagai</label>
+            <div class="roles-container">
+              <button
+                type="button"
+                v-for="(role, index) in roles"
+                :key="index"
+                @click="clickedRole(index)"
+                :class="index === selectedRoleId ? 'role-selected' : 'role-btn'"
+              >
+                <p>{{ role.title }}</p>
+              </button>
+            </div>
+          </div>
 
-      <div class="input-container">
-        <div class="form-group">
-          <BaseLabel :for="'fullname-input'" :value="'Nama lengkap'"></BaseLabel>
-          <BaseInput
-            :id="'fullname-input'"
-            :type="'text'"
-            :placeholder="'John Doe'"
-            v-model="userData.nama_lengkap"
-          ></BaseInput>
-          <p class="error" v-if="setErrors.nama_lengkap" v-text="setErrors.nama_lengkap[0]"></p>
-        </div>
-        <div class="form-group">
-          <BaseLabel :for="'username-input'" :value="'Username'"></BaseLabel>
-          <BaseInput
-            :id="'username-input'"
-            :type="'text'"
-            :placeholder="'Johndoe123'"
-            v-model="userData.username"
-          ></BaseInput>
-          <p class="error" v-if="setErrors.username" v-text="setErrors.username[0]"></p>
-        </div>
-      </div>
-      <div class="form-group" v-if="role === 'masyarakat'">
-        <BaseLabel :for="'email-input'" :value="'Email'"></BaseLabel>
-        <BaseInput :id="'email-input'" :type="'email'" :placeholder="'Email'" v-model="userData.email"></BaseInput>
-        <p class="error" v-if="setErrors.email" v-text="setErrors.email[0]"></p>
-      </div>
-      <div class="form-group">
-        <BaseLabel :for="'phone-input'" :value="'Nomor Telepon'"></BaseLabel>
-        <BaseInput
-          :id="'phone-input'"
-          :type="'tel'"
-          :placeholder="'081234567890'"
-          v-model="userData.telp"
-        ></BaseInput>
-        <p class="error" v-if="setErrors.telp" v-text="setErrors.telp[0]"></p>
-      </div>
+          <div class="input-container">
+            <div class="form-group">
+              <BaseLabel :for="'fullname-input'" :value="'Nama lengkap'"></BaseLabel>
+              <BaseInput
+                :id="'fullname-input'"
+                :type="'text'"
+                :placeholder="'John Doe'"
+                v-model="userData.nama_lengkap"
+              ></BaseInput>
+              <p class="error" v-if="setErrors.nama_lengkap" v-text="setErrors.nama_lengkap[0]"></p>
+            </div>
+            <div class="form-group">
+              <BaseLabel :for="'username-input'" :value="'Username'"></BaseLabel>
+              <BaseInput
+                :id="'username-input'"
+                :type="'text'"
+                :placeholder="'Johndoe123'"
+                v-model="userData.username"
+              ></BaseInput>
+              <p class="error" v-if="setErrors.username" v-text="setErrors.username[0]"></p>
+            </div>
+          </div>
+          <div class="form-group" v-if="role === 'masyarakat'">
+            <BaseLabel :for="'email-input'" :value="'Email'"></BaseLabel>
+            <BaseInput
+              :id="'email-input'"
+              :type="'email'"
+              :placeholder="'Email'"
+              v-model="userData.email"
+            ></BaseInput>
+            <p class="error" v-if="setErrors.email" v-text="setErrors.email[0]"></p>
+          </div>
+          <div class="form-group">
+            <BaseLabel :for="'phone-input'" :value="'Nomor Telepon'"></BaseLabel>
+            <BaseInput
+              :id="'phone-input'"
+              :type="'tel'"
+              :placeholder="'081234567890'"
+              v-model="userData.telp"
+            ></BaseInput>
+            <p class="error" v-if="setErrors.telp" v-text="setErrors.telp[0]"></p>
+          </div>
 
-      <div class="form-group">
-        <BaseLabel :for="'password-input'" :value="'Password'"></BaseLabel>
-        <div class="form-group-password">
-          <BaseInput
-            :id="'password-input'"
-            :type="isShowPw ? 'text' : 'password'"
-            :placeholder="'Password'"
-            v-model="userData.password"
-          ></BaseInput>
-          <button type="button" id="toggle-password" @click="showedPassword">
-            <div v-if="isShowPw">
-              <IconEyeOn></IconEyeOn>
+          <div class="form-group">
+            <BaseLabel :for="'password-input'" :value="'Password'"></BaseLabel>
+            <div class="form-group-password">
+              <BaseInput
+                :id="'password-input'"
+                :type="isShowPw ? 'text' : 'password'"
+                :placeholder="'Password'"
+                v-model="userData.password"
+              ></BaseInput>
+              <button type="button" id="toggle-password" @click="showedPassword">
+                <div v-if="isShowPw">
+                  <IconEyeOn></IconEyeOn>
+                </div>
+                <div v-else>
+                  <IconEyeOff></IconEyeOff>
+                </div>
+              </button>
             </div>
-            <div v-else>
-              <IconEyeOff></IconEyeOff>
+            <p class="error" v-if="setErrors.password" v-text="setErrors.password[0]"></p>
+          </div>
+          <div class="form-group" style="margin-bottom: 8px">
+            <BaseLabel :for="'confirm-password-input'" :value="'Konfirmasi password'"></BaseLabel>
+            <div class="form-group-password">
+              <BaseInput
+                :id="'confirm-password-input'"
+                :type="isShowConfirmPw ? 'text' : 'password'"
+                :placeholder="'Konfirmasi password'"
+                v-model="userData.confirm_password"
+              ></BaseInput>
+              <button type="button" id="toggle-password" @click="showedConfirmPassword">
+                <div v-if="isShowConfirmPw">
+                  <IconEyeOn></IconEyeOn>
+                </div>
+                <div v-else>
+                  <IconEyeOff></IconEyeOff>
+                </div>
+              </button>
             </div>
-          </button>
-        </div>
-        <p class="error" v-if="setErrors.password" v-text="setErrors.password[0]"></p>
+            <p
+              class="error"
+              v-if="setErrors.confirm_password"
+              v-text="setErrors.confirm_password[0]"
+            ></p>
+          </div>
+          <BaseButton type="submit" :disabled="isLoading" :class="isLoading ? 'btn-disabled' : ''">
+            <template #btn-content>
+              <p>Daftar</p>
+            </template>
+          </BaseButton>
+        </form>
+        <p class="nav-link">
+          Sudah punya akun? <router-link :to="{ name: 'login' }">Masuk</router-link>
+        </p>
       </div>
-      <div class="form-group" style="margin-bottom: 8px">
-        <BaseLabel :for="'confirm-password-input'" :value="'Konfirmasi password'"></BaseLabel>
-        <div class="form-group-password">
-          <BaseInput
-            :id="'confirm-password-input'"
-            :type="isShowConfirmPw ? 'text' : 'password'"
-            :placeholder="'Konfirmasi password'"
-            v-model="userData.confirm_password"
-          ></BaseInput>
-          <button type="button" id="toggle-password" @click="showedConfirmPassword">
-            <div v-if="isShowConfirmPw">
-              <IconEyeOn></IconEyeOn>
-            </div>
-            <div v-else>
-              <IconEyeOff></IconEyeOff>
-            </div>
-          </button>
-        </div>
-        <p
-          class="error"
-          v-if="setErrors.confirm_password"
-          v-text="setErrors.confirm_password[0]"
-        ></p>
-      </div>
-      <BaseButton type="submit" :disabled="isLoading" :class="isLoading ? 'btn-disabled' : ''">
-        <template #btn-content>
-          <p>Daftar</p>
-        </template>
-      </BaseButton>
-    </form>
-    <p class="nav-link">
-      Sudah punya akun? <router-link :to="{ name: 'login' }">Masuk</router-link>
-    </p>
-  </div>
+    </template>
+  </BaseLayout>
 </template>
 
 <style scoped>
@@ -206,6 +216,7 @@ const submitData = async () => {
   align-items: center;
   min-height: 100vh;
   flex-direction: column;
+  margin-top: 2rem;
 }
 
 .register-page h1 {

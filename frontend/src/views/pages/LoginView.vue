@@ -7,6 +7,7 @@ import IconEyeOn from '@/components/icons/IconEyeOn.vue'
 import { reactive, ref } from 'vue'
 import AuthService from '@/services/AuthService'
 import { useRouter } from 'vue-router'
+import BaseLayout from '../templates/BaseLayout.vue'
 
 let isShow = ref(false)
 const authSvc = new AuthService()
@@ -80,76 +81,80 @@ const submitData = async () => {
 </script>
 
 <template>
-  <div class="login-page">
-    <h1>Masuk Lagi</h1>
-    <p>Masuk akun yang telah terdaftar</p>
+  <BaseLayout>
+    <template #main>
+      <div class="login-page">
+        <h1>Masuk Lagi</h1>
+        <p>Masuk akun yang telah terdaftar</p>
 
-    <form @submit.prevent="submitData">
-      <div class="form-group">
-        <label style="font-weight: 600">Masuk sebagai</label>
-        <div class="roles-container">
-          <button
-            type="button"
-            v-for="(role, index) in roles"
-            :key="index"
-            @click="clickedRole(index)"
-            :class="index === selectedRoleId ? 'role-selected' : 'role-btn'"
-          >
-            <p>{{ role.title }}</p>
-          </button>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <BaseLabel :for="'username-input'" :value="'Username'"></BaseLabel>
-        <BaseInput
-          :id="'username-input'"
-          :type="'text'"
-          :placeholder="'JohnDoe123'"
-          v-model="userData.username"
-          autocomplete="username"
-        ></BaseInput>
-        <p class="error" v-if="setErrors.username" v-text="setErrors.username"></p>
-      </div>
-      <div class="form-group">
-        <BaseLabel :for="'password-input'" :value="'Password'"></BaseLabel>
-        <div class="form-group-password">
-          <BaseInput
-            :id="'password-input'"
-            :type="isShow ? 'text' : 'password'"
-            autocomplete="current-password"
-            :placeholder="'Password'"
-            v-model="userData.password"
-          ></BaseInput>
-
-          <button type="button" id="toggle-password" @click="changeShowPw">
-            <div v-if="isShow">
-              <IconEyeOn></IconEyeOn>
+        <form @submit.prevent="submitData">
+          <div class="form-group">
+            <label style="font-weight: 600">Masuk sebagai</label>
+            <div class="roles-container">
+              <button
+                type="button"
+                v-for="(role, index) in roles"
+                :key="index"
+                @click="clickedRole(index)"
+                :class="index === selectedRoleId ? 'role-selected' : 'role-btn'"
+              >
+                <p>{{ role.title }}</p>
+              </button>
             </div>
-            <div v-else>
-              <IconEyeOff></IconEyeOff>
+          </div>
+
+          <div class="form-group">
+            <BaseLabel :for="'username-input'" :value="'Username'"></BaseLabel>
+            <BaseInput
+              :id="'username-input'"
+              :type="'text'"
+              :placeholder="'JohnDoe123'"
+              v-model="userData.username"
+              autocomplete="username"
+            ></BaseInput>
+            <p class="error" v-if="setErrors.username" v-text="setErrors.username"></p>
+          </div>
+          <div class="form-group">
+            <BaseLabel :for="'password-input'" :value="'Password'"></BaseLabel>
+            <div class="form-group-password">
+              <BaseInput
+                :id="'password-input'"
+                :type="isShow ? 'text' : 'password'"
+                autocomplete="current-password"
+                :placeholder="'Password'"
+                v-model="userData.password"
+              ></BaseInput>
+
+              <button type="button" id="toggle-password" @click="changeShowPw">
+                <div v-if="isShow">
+                  <IconEyeOn></IconEyeOn>
+                </div>
+                <div v-else>
+                  <IconEyeOff></IconEyeOff>
+                </div>
+              </button>
             </div>
-          </button>
-        </div>
-        <p class="error" v-if="setErrors.password" v-text="setErrors.password"></p>
+            <p class="error" v-if="setErrors.password" v-text="setErrors.password"></p>
+          </div>
+
+          <div class="form-group">
+            <input type="checkbox" id="check-remember" v-model="userData.isRememberMe" />
+            <label for="check-remember">Ingat saya</label>
+          </div>
+
+          <BaseButton type="submit" :disabled="isLoading" :class="isLoading ? 'btn-disabled' : ''">
+            <template #btn-content>
+              <p>Masuk</p>
+            </template>
+          </BaseButton>
+
+          <p class="nav-link">
+            Belum punya akun? <router-link :to="{ name: 'register' }">Daftar</router-link>
+          </p>
+        </form>
       </div>
-
-      <div class="form-group">
-        <input type="checkbox" id="check-remember" v-model="userData.isRememberMe" />
-        <label for="check-remember">Ingat saya</label>
-      </div>
-
-      <BaseButton type="submit" :disabled="isLoading" :class="isLoading ? 'btn-disabled' : ''">
-        <template #btn-content>
-          <p>Masuk</p>
-        </template>
-      </BaseButton>
-
-      <p class="nav-link">
-        Belum punya akun? <router-link :to="{ name: 'register' }">Daftar</router-link>
-      </p>
-    </form>
-  </div>
+    </template>
+  </BaseLayout>
 </template>
 
 <style scoped>
@@ -159,6 +164,7 @@ const submitData = async () => {
   align-items: center;
   min-height: 100vh;
   flex-direction: column;
+  position: relative;
 }
 
 .login-page h1 {
