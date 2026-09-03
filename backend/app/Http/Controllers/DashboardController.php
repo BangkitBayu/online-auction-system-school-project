@@ -43,7 +43,7 @@ class DashboardController extends Controller
                 ->where('lelang.status', '=', 'dibuka')
                 ->leftJoin('history_lelang as history', 'history.id_lelang', '=', 'lelang.id_lelang')
                 ->join('tb_barang as barang', 'barang.id_barang', '=', 'lelang.id_barang')
-                ->orderBy('lelang.tgl_akhir_lelang')
+                ->orderBy('history.created_at' , 'desc')
                 ->where('history.id_user', '=', $id_user)
                 ->select(
                     [
