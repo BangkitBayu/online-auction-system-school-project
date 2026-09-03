@@ -113,3 +113,9 @@ php artisan schedule:work
 | Monitoring lelang | ![monitoring-lelang](./documentation/img/monitoringAuction.png) |
 | Laporan lelang | ![laporan-lelang](./documentation/img/laporan-lelang.png) |
 ---
+
+## Lisensi
+ 
+Project ini dibuat untuk keperluan tugas sekolah dan dilisensikan di bawah [MIT License](https://opensource.org/licenses/MIT) — bebas digunakan untuk pembelajaran.
+ 
+---
